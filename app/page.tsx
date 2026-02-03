@@ -264,7 +264,7 @@ export default function LandingPage() {
           audience.
         </p>
         <Link
-          href="/consultation"
+          href="/contact"
           aria-label="Book a consultation"
           className="inline-block px-10 py-4 rounded-xl bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-white font-semibold hover:scale-105 transition-transform"
         >
