@@ -101,7 +101,7 @@ export default function Footer() {
         viewport={{ once: true }}
         className="border-t border-white/10 text-center py-6 text-gray-500 text-sm"
       >
-        © {new Date().getFullYear()} Rodique Studio. All rights reserved.
+        © {new Date().getFullYear()} Eccentric Digital. All rights reserved.
       </motion.div>
     </footer>
   );
