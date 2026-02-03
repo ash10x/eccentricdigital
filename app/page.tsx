@@ -266,7 +266,7 @@ export default function LandingPage() {
         <Link
           href="/consultation"
           aria-label="Book a consultation"
-          className="inline-block px-10 py-4 rounded-xl bg-white text-black font-semibold hover:scale-105 transition-transform"
+          className="inline-block px-10 py-4 rounded-xl bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-white font-semibold hover:scale-105 transition-transform"
         >
           Book Consultation
         </Link>

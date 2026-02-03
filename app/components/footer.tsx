@@ -17,11 +17,13 @@ export default function Footer() {
           viewport={{ once: true }}
           className="flex flex-col items-center md:items-start"
         >
-          <Image src="/logo.png" alt="Logo" width={100} height={100} />
-          <p className="text-gray-400 text-sm mt-2 max-w-xs text-center md:text-left">
-            Crafting cinematic, luxury-grade digital experiences with precision
-            and flair.
-          </p>
+          <Image
+            className="h-auto w-auto"
+            src="/eccentriclogowhite.png"
+            alt="Logo"
+            width={40}
+            height={40}
+          />
         </motion.div>
 
         {/* Navigation */}
