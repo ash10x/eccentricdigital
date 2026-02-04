@@ -189,7 +189,7 @@ export default function AboutPage() {
         <FadeInUp delay={0.2}>
           <a
             href="/contact"
-            className="inline-block px-8 py-4 rounded-xl bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-black font-semibold shadow-lg hover:scale-105 transition"
+            className="inline-block px-8 py-4 rounded-xl bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-white font-semibold shadow-lg hover:scale-105 transition"
           >
             Start Your Project
           </a>
