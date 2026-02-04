@@ -196,8 +196,7 @@ export default function ServicesPage() {
             Our Services
           </h1>
           <p className="max-w-2xl mx-auto text-gray-300">
-            Cinematic, glassmorphic digital experiences built to elevate modern
-            brands.
+            Modern brands deserve digital experiences that inspire and perform.
           </p>
         </motion.div>
       </section>

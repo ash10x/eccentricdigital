@@ -56,7 +56,7 @@ export default function AboutPage() {
           <h1 className="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight drop-shadow-[0_0_20px_rgba(36,237,162,0.35)]">
             About Us
           </h1>
-          <p className="text-gray-300 text-base md:text-lg">
+          <p className="max-w-2xl mx-auto text-gray-300">
             We don’t just build websites — we craft immersive digital
             experiences that elevate brands and tell unforgettable stories.
           </p>

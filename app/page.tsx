@@ -103,7 +103,7 @@ export default function LandingPage() {
             {/* Background Image */}
             <motion.div
               style={{ y: yParallax }}
-              className="absolute inset-0 scale-105"
+              className="absolute inset-0 h-screen "
             >
               <Image
                 src={slides[index].image}
@@ -111,12 +111,12 @@ export default function LandingPage() {
                 fill
                 priority={index === 0}
                 sizes="100vw"
-                className="object-cover object-center"
+                className="object-cover object-center h-full w-full"
               />
             </motion.div>
 
             {/* Overlay Content */}
-            <div className="absolute inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center">
               <div className="text-center px-6 max-w-3xl">
                 <motion.h1
                   initial={{ y: 40, opacity: 0 }}
@@ -162,9 +162,9 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30"
         >
-          <div className="flex gap-3 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md">
+          <div className="flex gap-3 px-4 py-2 rounded-full backdrop-blur-md">
             {slides.map((_, i) => (
               <button
                 key={i}
@@ -228,8 +228,16 @@ export default function LandingPage() {
           Our Vision
         </motion.h2>
         <p className="max-w-3xl mx-auto text-gray-300 text-lg">
-          We design cinematic digital experiences that elevate brands into icons
-          of modern design.
+          We envision a digital world where every business—no matter its
+          size—has access to sleek, high-performing websites that inspire trust,
+          drive growth, and deliver results. Our mission is to transform ideas
+          into immersive online experiences through cutting-edge design,
+          seamless remodeling, and reliable maintenance. Whether you need a
+          quick launch site or a complete brand overhaul, we combine creativity,
+          technology, and strategy to build websites that don’t just look
+          stunning—they work flawlessly. We’re here to simplify the digital
+          journey, empower entrepreneurs, and elevate brands with solutions that
+          are fast, flexible, and future-ready.
         </p>
       </section>
 
@@ -260,8 +268,8 @@ export default function LandingPage() {
           Ready to Elevate Your Brand?
         </h2>
         <p className="max-w-2xl mx-auto mb-10 text-gray-300 text-lg">
-          Let’s craft a cinematic digital experience that captivates your
-          audience.
+          Let’s build an unforgettable online experience that wins attention and
+          trust.
         </p>
         <Link
           href="/contact"

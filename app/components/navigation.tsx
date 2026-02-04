@@ -123,7 +123,7 @@ export default function Navbar() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden text-gray-100 focus:outline-none"
+          className="md:hidden text-gray-100 focus:outline-none z-10"
         >
           <svg
             className="w-7 h-7"
@@ -158,7 +158,7 @@ export default function Navbar() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ duration: 0.4 }}
-            className="md:hidden bg-black/90 backdrop-blur-xl border-l border-white/30 shadow-lg absolute top-16 right-0 w-3/4 h-screen flex flex-col items-center gap-6 py-10"
+            className="md:hidden bg-black/90 backdrop-blur-xl border-white/30 shadow-lg absolute top-0 right-0 w-3/4 h-screen flex flex-col items-center gap-6 py-20"
           >
             {navLinks.map((link) =>
               link.dropdown ? (
@@ -209,7 +209,7 @@ export default function Navbar() {
               ),
             )}
             <Link
-              href="/consultation"
+              href="/contact"
               className="px-6 py-3 rounded-lg bg-linear-to-r from-blue-600 to-purple-600 text-white hover:opacity-90 transition hover:scale-105"
               onClick={() => setIsOpen(false)}
             >
