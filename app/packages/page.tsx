@@ -40,7 +40,7 @@ export default function PackagesPage() {
       serviceKey: "custom-design",
       description:
         "Custom websites made simple. Fast, sleek, and designed to turn clicks into customers.",
-      image: "/images/package-starter.jpg",
+      image: "/images/businesspro.jpg",
       price: "$200",
       features: [
         "Custom Design",
@@ -57,7 +57,7 @@ export default function PackagesPage() {
       serviceKey: "ecommerce",
       description:
         "Launch a custom eCommerce store designed to sell, scale, and delight your customers.",
-      image: "/images/package-professional.jpg",
+      image: "/images/ecommerce.jpg",
       price: "$350",
       features: [
         "Custom Design",
@@ -76,7 +76,7 @@ export default function PackagesPage() {
       serviceKey: "custom-design",
       description:
         "Elevate your online presence with a website tailored to your brand. Seamless design, flawless performance, maximum impact.",
-      image: "/images/package-premium.jpg",
+      image: "/images/legacyimpact.jpg",
       price: "$500",
       features: [
         "Custom Design",
@@ -213,9 +213,11 @@ export default function PackagesPage() {
               <thead className="bg-white/10">
                 <tr>
                   <th className="p-4 text-left">Feature</th>
-                  <th className="p-4">Starter</th>
-                  <th className="p-4 text-[#24eda2]">Professional</th>
-                  <th className="p-4">Premium</th>
+                  <th className="p-4">Business Professional</th>
+                  <th className="p-4 text-[#24eda2]">
+                    E-commerce & Engagement
+                  </th>
+                  <th className="p-4">Legacy Impact</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/10">
