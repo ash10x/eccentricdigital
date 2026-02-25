@@ -6,7 +6,6 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
-import { li } from "framer-motion/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -56,13 +55,13 @@ const portfolio = [
   {
     title: "The Aroma Circle",
     description: "Cinematic, modern, conversion-focused.",
-    image: "/eccentriclogo.png",
+    image: "/portfolio/the-aroma-circle.jpg",
     link: "https://thearomacircle.com",
   },
   {
     title: "All Hopes For The Glory",
     description: "Sleek, futuristic design for a cutting-edge tech brand.",
-    image: "/eccentriclogo.png",
+    image: "/portfolio/allhopesfortheglory.jpg",
     link: "https://technova.com",
   },
   {
@@ -110,11 +109,9 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (manual) return;
-
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % slides.length);
-    }, 4500);
-
+    }, 5000);
     return () => clearInterval(timer);
   }, [manual]);
 
@@ -131,164 +128,156 @@ export default function LandingPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.9 }}
+            transition={{ duration: 1 }}
             className="absolute inset-0"
           >
-            {/* Background Image */}
-            <motion.div
-              style={{ y: yParallax }}
-              className="absolute inset-0 h-screen "
-            >
+            <motion.div style={{ y: yParallax }} className="absolute inset-0">
               <Image
                 src={slides[index].image}
                 alt={slides[index].title}
                 fill
                 priority={index === 0}
+                quality={85}
                 sizes="100vw"
-                className="object-cover object-center h-full w-full"
+                className="object-cover"
               />
             </motion.div>
 
-            {/* Overlay Content */}
-            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center">
-              <div className="text-center px-6 max-w-3xl">
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/60 to-black/80 flex items-center justify-center">
+              <div className="text-center px-6 max-w-4xl">
                 <motion.h1
-                  initial={{ y: 40, opacity: 0 }}
+                  initial={{ y: 60, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="text-5xl md:text-6xl font-extrabold mb-6"
+                  transition={{ duration: 0.8 }}
+                  className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 relative"
                 >
-                  {slides[index].title}
+                  <span className="bg-gradient-to-r from-[#24eda2] to-[#00a3f8] bg-clip-text text-transparent">
+                    {slides[index].title}
+                  </span>
+                  <span className="absolute inset-0 blur-3xl opacity-20 bg-gradient-to-r from-[#24eda2] to-[#00a3f8] -z-10" />
                 </motion.h1>
 
                 <motion.p
                   initial={{ y: 40, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="text-lg md:text-xl text-gray-200"
+                  transition={{ delay: 0.2 }}
+                  className="text-lg md:text-xl text-gray-300 mb-10"
                 >
                   {slides[index].subtitle}
                 </motion.p>
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="flex flex-col sm:flex-row gap-4 justify-center"
+                >
+                  <Link
+                    href="/contact"
+                    className="px-8 py-4 rounded-xl bg-gradient-to-r from-[#24eda2] to-[#00a3f8] font-semibold hover:scale-105 transition-transform shadow-lg"
+                  >
+                    Start Your Project
+                  </Link>
+
+                  <Link
+                    href="#portfolio"
+                    className="px-8 py-4 rounded-xl border border-white/20 backdrop-blur-md hover:bg-white/10 transition"
+                  >
+                    View Our Work
+                  </Link>
+                </motion.div>
               </div>
             </div>
           </motion.div>
         </AnimatePresence>
 
-        {/* Arrow Controls */}
+        {/* Progress Bar */}
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-white/10">
+          <motion.div
+            key={index}
+            initial={{ width: "0%" }}
+            animate={{ width: "100%" }}
+            transition={{ duration: 5 }}
+            className="h-full bg-gradient-to-r from-[#24eda2] to-[#00a3f8]"
+          />
+        </div>
+
+        {/* Controls */}
         <button
-          aria-label="Previous slide"
           onClick={prev}
-          className="absolute left-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition"
+          className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition"
         >
           ‹
         </button>
 
         <button
-          aria-label="Next slide"
           onClick={next}
-          className="absolute right-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition"
+          className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition"
         >
           ›
         </button>
-
-        {/* Overlay Dots */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30"
-        >
-          <div className="flex gap-3 px-4 py-2 rounded-full backdrop-blur-md">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                aria-label={`Go to slide ${i + 1}`}
-                onClick={() => goTo(i)}
-                className={`w-2.5 h-2.5 rounded-full transition-all ${
-                  index === i
-                    ? "bg-white scale-125"
-                    : "bg-white/40 hover:bg-white/70"
-                }`}
-              />
-            ))}
-          </div>
-        </motion.div>
       </section>
 
       {/* PORTFOLIO */}
-      <section className="py-20 max-w-7xl mx-auto px-6">
-        <h2 className="text-4xl font-bold text-center mb-12">Our Portfolio</h2>
-        <div className="grid md:grid-cols-3 gap-8">
+      <section id="portfolio" className="py-24 max-w-7xl mx-auto px-6">
+        <h2 className="text-4xl font-bold text-center mb-16">Our Portfolio</h2>
+
+        <div className="grid md:grid-cols-3 gap-10">
           {portfolio.map((item, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 60 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="rounded-xl overflow-hidden bg-white/10 backdrop-blur-md hover:scale-105 transition-transform"
+              transition={{ delay: i * 0.1 }}
+              viewport={{ once: true }}
+              className="group relative rounded-2xl overflow-hidden bg-white/5 border border-white/10 backdrop-blur-xl transition-all duration-500 hover:scale-105 hover:border-[#24eda2]/40"
             >
               <Image
-                src={`${item.image}`}
-                alt="Portfolio project"
+                src={item.image}
+                alt={`${item.title} project preview`}
                 width={600}
                 height={400}
                 loading="lazy"
                 className="object-cover w-full h-64"
               />
-              <div className="p-4">
-                <h3 className="text-xl font-semibold">{item.title}</h3>
-                <p className="text-sm text-gray-300">{item.description}</p>
-                <Link
-                  href={item.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-3 inline-block text-sm text-[#24eda2] hover:underline"
-                >
-                  Visit Site
-                </Link>
+
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition duration-500 flex items-end p-6">
+                <div>
+                  <h3 className="text-xl font-semibold mb-1">{item.title}</h3>
+                  <p className="text-sm text-gray-300">{item.description}</p>
+                  <Link
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block mt-3 text-[#24eda2] hover:underline"
+                  >
+                    Visit Site →
+                  </Link>
+                </div>
               </div>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* VISION */}
-      <section className="py-24 bg-gradient-to-r from-gray-800 via-black to-gray-900 text-center">
-        <motion.h2
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          className="text-5xl font-extrabold mb-6"
-        >
-          Our Vision
-        </motion.h2>
-        <p className="max-w-3xl mx-auto text-gray-300 text-lg">
-          We envision a digital world where every business—no matter its
-          size—has access to sleek, high-performing websites that inspire trust,
-          drive growth, and deliver results. Our mission is to transform ideas
-          into immersive online experiences through cutting-edge design,
-          seamless remodeling, and reliable maintenance. Whether you need a
-          quick launch site or a complete brand overhaul, we combine creativity,
-          technology, and strategy to build websites that don’t just look
-          stunning—they work flawlessly. We’re here to simplify the digital
-          journey, empower entrepreneurs, and elevate brands with solutions that
-          are fast, flexible, and future-ready.
-        </p>
-      </section>
-
       {/* TESTIMONIALS */}
       <section className="py-24 max-w-6xl mx-auto px-6">
-        <h2 className="text-4xl font-bold text-center mb-12">
+        <h2 className="text-4xl font-bold text-center mb-16">
           What Clients Say
         </h2>
-        <div className="grid md:grid-cols-3 gap-8">
+
+        <div className="grid md:grid-cols-3 gap-10">
           {testimonials.map((t, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 60 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.15 }}
-              className="rounded-xl bg-white/10 backdrop-blur-md p-6 hover:scale-105 transition-transform"
+              viewport={{ once: true }}
+              className="rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xl p-8 hover:scale-105 transition-all duration-500 hover:border-[#24eda2]/40"
             >
+              <div className="text-[#24eda2] mb-3">★★★★★</div>
               <p className="mb-4 text-gray-200">“{t.quote}”</p>
               <h4 className="font-semibold">{t.name}</h4>
             </motion.div>
@@ -297,21 +286,37 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 bg-black text-center">
-        <h2 className="text-5xl font-extrabold mb-6">
+      <section className="relative py-28 bg-black text-center overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-[#24eda2]/10 to-[#00a3f8]/10 blur-3xl" />
+
+        <h2 className="text-5xl md:text-6xl font-extrabold mb-6 relative z-10">
           Ready to Elevate Your Brand?
         </h2>
-        <p className="max-w-2xl mx-auto mb-10 text-gray-300 text-lg">
-          Let’s build an unforgettable online experience that wins attention and
-          trust.
+
+        <p className="max-w-2xl mx-auto mb-10 text-gray-300 text-lg relative z-10">
+          Let’s build an unforgettable online experience that wins attention,
+          drives growth, and positions you as the authority.
         </p>
-        <Link
-          href="/contact"
-          aria-label="Book a consultation"
-          className="inline-block px-10 py-4 rounded-xl bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-white font-semibold hover:scale-105 transition-transform"
-        >
-          Book Consultation
-        </Link>
+
+        <div className="flex flex-col sm:flex-row gap-6 justify-center relative z-10">
+          <Link
+            href="/contact"
+            className="px-10 py-4 rounded-xl bg-gradient-to-r from-[#24eda2] to-[#00a3f8] font-semibold hover:scale-105 transition-transform shadow-2xl"
+          >
+            Book Consultation
+          </Link>
+
+          <Link
+            href="#portfolio"
+            className="px-10 py-4 rounded-xl border border-white/20 hover:bg-white/10 transition"
+          >
+            See Our Work
+          </Link>
+        </div>
+
+        <p className="mt-6 text-sm text-gray-500 relative z-10">
+          Limited onboarding slots available this month.
+        </p>
       </section>
     </main>
   );
