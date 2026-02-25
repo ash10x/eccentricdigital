@@ -6,6 +6,7 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
+import { li } from "framer-motion/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -48,6 +49,39 @@ const testimonials = [
     name: "Aisha K.",
     quote:
       "The immersive UI/UX dramatically boosted engagement across our platforms.",
+  },
+];
+
+const portfolio = [
+  {
+    title: "The Aroma Circle",
+    description: "Cinematic, modern, conversion-focused.",
+    image: "/eccentriclogo.png",
+    link: "https://thearomacircle.com",
+  },
+  {
+    title: "All Hopes For The Glory",
+    description: "Sleek, futuristic design for a cutting-edge tech brand.",
+    image: "/eccentriclogo.png",
+    link: "https://technova.com",
+  },
+  {
+    title: "The Wool Lab",
+    description: "Elegant, minimalist design for a high-end lifestyle brand.",
+    image: "/eccentriclogo.png",
+    link: "https://luxeliving.com",
+  },
+  {
+    title: "Trans1",
+    description: "Vibrant, dynamic design for a trendy restaurant chain.",
+    image: "/eccentriclogo.png",
+    link: "https://urbaneats.com",
+  },
+  {
+    title: "FitPro",
+    description: "Energetic, modern design for a fitness and wellness brand.",
+    image: "/eccentriclogo.png",
+    link: "https://fitpro.com",
   },
 ];
 
@@ -185,13 +219,7 @@ export default function LandingPage() {
       <section className="py-20 max-w-7xl mx-auto px-6">
         <h2 className="text-4xl font-bold text-center mb-12">Our Portfolio</h2>
         <div className="grid md:grid-cols-3 gap-8">
-          {[
-            "portfolio1",
-            "portfolio2",
-            "portfolio3",
-            "portfolio4",
-            "portfolio5",
-          ].map((img, i) => (
+          {portfolio.map((item, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 40 }}
@@ -200,7 +228,7 @@ export default function LandingPage() {
               className="rounded-xl overflow-hidden bg-white/10 backdrop-blur-md hover:scale-105 transition-transform"
             >
               <Image
-                src={`/images/${img}.jpg`}
+                src={`${item.image}`}
                 alt="Portfolio project"
                 width={600}
                 height={400}
@@ -208,10 +236,16 @@ export default function LandingPage() {
                 className="object-cover w-full h-64"
               />
               <div className="p-4">
-                <h3 className="text-xl font-semibold">Luxury Web Project</h3>
-                <p className="text-sm text-gray-300">
-                  Cinematic, modern, conversion-focused.
-                </p>
+                <h3 className="text-xl font-semibold">{item.title}</h3>
+                <p className="text-sm text-gray-300">{item.description}</p>
+                <Link
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 inline-block text-sm text-[#24eda2] hover:underline"
+                >
+                  Visit Site
+                </Link>
               </div>
             </motion.div>
           ))}
