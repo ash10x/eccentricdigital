@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { link } from "fs";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
@@ -18,18 +19,23 @@ export default function LandingPage() {
       description:
         "A groundbreaking e-commerce platform that redefines online shopping.",
       image: "/portfolio/the-aroma-circle.png",
+      link: "https://the-aroma-circle.vercel.app/",
     },
     {
-      title: "Project Two",
+      title: "All Hopes For The Glory",
       description:
         "An innovative SaaS solution that streamlines business operations.",
-      image: "/portfolio/the-aroma-circle.png",
+      image:
+        "/portfolio/image-placeholder.pngc:\Users\Rodique Orlandi\Downloads\WhLiyU.png",
+      link: "https://allhopesfortheglory.com",
     },
     {
-      title: "Project Three",
+      title: "The Wool Lab",
       description:
         "A cutting-edge mobile app that revolutionizes social networking.",
-      image: "/portfolio/the-aroma-circle.png",
+      image:
+        "/portfolio/image-placeholder.pngc:\Users\Rodique Orlandi\Downloads\WhLiyU.png",
+      link: "https://loomidesigns.shop",
     },
   ];
 
@@ -173,6 +179,9 @@ export default function LandingPage() {
               className="group relative overflow-hidden rounded-3xl 
                 border border-white/10 shadow-2xl"
             >
+              <p className="absolute top-4 left-4 text-sm text-white font-bold bg-black/50 px-3 py-1 rounded-full z-100">
+                {project.title}
+              </p>
               <div
                 className="h-130 bg-linear-to-br from-gray-900 to-black 
                 flex items-center justify-center text-4xl font-black tracking-wide"
@@ -184,13 +193,12 @@ export default function LandingPage() {
                   className="object-cover w-full h-full group-hover:scale-110 transition duration-500"
                 />
               </div>
-
               <div
                 className="absolute inset-0 bg-black/80 opacity-0 
                 group-hover:opacity-100 transition flex items-center justify-center"
               >
                 <Link
-                  href="/contact"
+                  href={project.link}
                   className="px-10 py-4 bg-linear-to-r 
                     from-[#24eda2] to-[#00a3f8] rounded-xl font-bold"
                 >
