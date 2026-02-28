@@ -93,7 +93,7 @@ export default function LandingPage() {
               className="px-12 py-5 rounded-xl border border-white/20 
               hover:bg-white/10 transition"
             >
-              View Projects
+              View Portfolio
             </Link>
           </div>
         </motion.div>
@@ -159,7 +159,7 @@ export default function LandingPage() {
 
       <section id="portfolio" className="py-40 px-6 bg-black">
         <h2 className="text-5xl font-extrabold text-center mb-24">
-          Selected Work
+          Our Portfolio
         </h2>
 
         <div className="max-w-6xl mx-auto space-y-28">
