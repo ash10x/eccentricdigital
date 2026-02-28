@@ -28,3 +28,75 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.input-style {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: 0.3s ease;
+  color: white;
+}
+
+.input-style:focus {
+  outline: none;
+  border-color: #24eda2;
+  box-shadow: 0 0 20px rgba(36, 237, 162, 0.3);
+}
+
+.primary-btn {
+  padding: 14px 24px;
+  border-radius: 18px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #24eda2, #00a3f8);
+  color: black;
+  transition: 0.3s ease;
+}
+
+.primary-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(36, 237, 162, 0.4);
+}
+
+.package-btn,
+.time-btn {
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.package-btn:hover,
+.time-btn:hover {
+  border-color: #24eda2;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(36, 237, 162, 0.15);
+}
+
+.active-package {
+  background: linear-gradient(135deg, #24eda2, #00a3f8);
+  color: black;
+  border-color: transparent;
+}
+
+.select-dark {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: rgba(15, 15, 15, 0.95);
+  color: white;
+}
+
+.select-dark option {
+  background-color: #111;
+  color: white;
+}
+
+/* For Windows browsers */
+select option {
+  background: #111;
+  color: white;
+}

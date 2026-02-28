@@ -26,7 +26,7 @@ const services: Service[] = [
     title: "Custom Web Design",
     tags: ["Design", "UX", "Conversion"],
     description:
-      "Tailored, high-impact websites crafted to reflect your brand’s identity and convert visitors into customers.",
+      "Cinematic digital experiences engineered to position you as the authority.",
     image: "/images/customwebsites.jpg",
     route: "/services/custom-web-design",
   },
@@ -34,23 +34,22 @@ const services: Service[] = [
     title: "Website Remodeling",
     tags: ["Redesign", "Performance", "SEO"],
     description:
-      "Transform outdated websites into modern, fast, and visually compelling digital experiences.",
+      "We rebuild outdated websites into modern revenue-generating platforms.",
     image: "/images/websiteremodeling.jpg",
     route: "/services/website-remodeling",
   },
   {
     title: "Website Maintenance",
-    tags: ["Security", "Updates", "Support"],
+    tags: ["Security", "Optimization", "Support"],
     description:
-      "We keep your website secure, optimized, and running smoothly so you can focus on your business.",
+      "Elite-level performance monitoring and proactive optimization.",
     image: "/images/websitemaintenance.jpg",
     route: "/services/website-maintenance",
   },
   {
     title: "Quick Start Websites",
-    tags: ["Launch Fast", "Affordable", "Reliable"],
-    description:
-      "Professional websites launched quickly — perfect for startups and growing brands.",
+    tags: ["Launch", "Fast", "Professional"],
+    description: "Premium launch-ready websites built for serious startups.",
     image: "/images/quicksite.jpg",
     route: "/services/quick-start-websites",
   },
@@ -58,16 +57,13 @@ const services: Service[] = [
 
 /* ---------------- Magnetic Hook ---------------- */
 const useMagnetic = () => {
-  const rotateX = useSpring(0, { stiffness: 150, damping: 20 });
-  const rotateY = useSpring(0, { stiffness: 150, damping: 20 });
+  const rotateX = useSpring(0, { stiffness: 120, damping: 18 });
+  const rotateY = useSpring(0, { stiffness: 120, damping: 18 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const dx = (x - rect.width / 2) / rect.width;
-    const dy = (y - rect.height / 2) / rect.height;
+    const dx = (e.clientX - rect.left - rect.width / 2) / rect.width;
+    const dy = (e.clientY - rect.top - rect.height / 2) / rect.height;
 
     rotateX.set(-dy * 6);
     rotateY.set(dx * 6);
@@ -82,69 +78,61 @@ const useMagnetic = () => {
 };
 
 /* ---------------- Card ---------------- */
-const cardVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0 },
-};
-
 const MagneticCard = ({ service }: { service: Service }) => {
   const { rotateX, rotateY, handleMouseMove, reset } = useMagnetic();
 
   return (
-    <motion.div variants={cardVariants}>
-      <Link
-        href={service.route}
-        aria-label={`View ${service.title} service`}
-        className="block"
-      >
+    <motion.div
+      initial={{ opacity: 0, y: 80 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8 }}
+    >
+      <Link href={service.route}>
         <motion.div
           onMouseMove={handleMouseMove}
           onMouseLeave={reset}
-          style={{
-            rotateX,
-            rotateY,
-            transformPerspective: 1000,
-          }}
-          whileHover={{ scale: 1.02 }}
-          className="group relative rounded-xl overflow-hidden bg-white/10 backdrop-blur-md
-                     border border-white/10 shadow-lg transition-all
-                     hover:shadow-[0_0_40px_rgba(36,237,162,0.15)]"
+          style={{ rotateX, rotateY, transformPerspective: 1000 }}
+          whileHover={{ scale: 1.03 }}
+          className="group relative rounded-3xl overflow-hidden
+                     bg-white/4
+                     border border-white/10
+                     backdrop-blur-2xl
+                     hover:border-[#24eda2]/40
+                     transition-all duration-500"
         >
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-700 bg-linear-to-br from-[#24eda2]/10 to-[#00a3f8]/10" />
+
           <Image
             src={service.image}
             alt={service.title}
             width={600}
             height={400}
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover w-full h-64 transition-transform duration-700 group-hover:scale-105"
+            className="object-cover w-full h-64 transition-transform duration-700 group-hover:scale-110"
           />
 
-          <div className="p-6 space-y-4">
-            <div className="flex flex-wrap gap-2 text-xs text-white/70">
+          <div className="p-10 space-y-6 relative z-10">
+            <div className="flex flex-wrap gap-2 text-xs text-white/60 uppercase tracking-wide">
               {service.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="px-2 py-1 rounded-full bg-white/10 border border-white/10"
+                  className="px-3 py-1 rounded-full bg-white/5 border border-white/10"
                 >
                   {tag}
                 </span>
               ))}
             </div>
 
-            <h3 className="text-2xl font-semibold tracking-wide">
+            <h3 className="text-2xl font-bold tracking-tight">
               {service.title}
             </h3>
 
-            <p className="text-gray-300 leading-relaxed">
+            <p className="text-gray-400 leading-relaxed">
               {service.description}
             </p>
 
-            <span
-              className="inline-block mt-2 text-sm text-blue-400
-                         opacity-0 group-hover:opacity-100
-                         group-focus-within:opacity-100 transition"
-            >
-              View Service →
+            <span className="inline-block text-[#24eda2] opacity-0 group-hover:opacity-100 transition duration-500">
+              Explore Service →
             </span>
           </div>
         </motion.div>
@@ -168,56 +156,80 @@ export default function ServicesPage() {
     : useTransform(scrollYProgress, [0, 1], [0, -120]);
 
   return (
-    <main className="bg-linear-to-br from-gray-900 via-black to-gray-800 text-white min-h-screen">
-      {/* Hero */}
+    <main className="bg-black text-white overflow-hidden">
+      {/* HERO */}
       <section
         ref={heroRef}
-        className="relative h-[60vh] flex items-center justify-center overflow-hidden"
+        className="relative h-[75vh] flex items-center justify-center text-center px-6"
       >
         <motion.div style={{ y: yParallax }} className="absolute inset-0">
           <Image
             src="/images/backdrop.png"
-            alt="Premium Services Hero"
+            alt="Eccentric Digital Services"
             fill
             priority
             className="object-cover"
           />
         </motion.div>
 
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/90" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/70 via-black/85 to-black" />
 
         <motion.div
-          initial={{ opacity: 0, y: 30, filter: "blur(6px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 0.9 }}
-          className="relative z-10 text-center max-w-3xl px-6"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="relative z-10 max-w-4xl"
         >
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight drop-shadow-[0_0_20px_rgba(36,237,162,0.4)]">
-            Our Services
+          <h1 className="text-5xl md:text-5xl font-extrabold leading-tight tracking-tight">
+            We Don’t Offer Services.
+            <br />
+            <span className="bg-linear-to-r from-[#24eda2] to-[#00a3f8] bg-clip-text text-transparent">
+              We Build Digital Weapons.
+            </span>
           </h1>
-          <p className="max-w-2xl mx-auto text-gray-300">
-            Modern brands deserve digital experiences that inspire and perform.
+
+          <p className="mt-8 text-gray-300 text-md max-w-2xl mx-auto leading-relaxed">
+            Every engagement is engineered for authority, performance, and
+            consistent conversion.
           </p>
         </motion.div>
       </section>
 
-      {/* Services */}
-      <section className="py-24 max-w-7xl mx-auto px-6">
+      {/* AGITATION */}
+      <section className="py-36 text-center max-w-4xl mx-auto px-6">
         <motion.h2
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 60 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-[28pt] font-bold text-center mb-16 tracking-wide"
+          viewport={{ once: true }}
+          className="text-4xl md:text-5xl font-bold mb-10 tracking-tight"
         >
-          What We Offer
+          Most Websites Are Digital Decorations.
         </motion.h2>
 
+        <p className="text-gray-400 text-md leading-relaxed">
+          They look decent.
+          <br />
+          They function.
+          <br />
+          <br />
+          But they don’t position you.
+          <br />
+          They don’t convert consistently.
+          <br />
+          They don’t scale with ambition.
+        </p>
+      </section>
+
+      {/* SERVICES */}
+      <section className="py-28 max-w-7xl mx-auto px-6">
         <motion.div
-          className="grid md:grid-cols-2 gap-12"
+          className="grid md:grid-cols-2 gap-20"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          variants={{ visible: { transition: { staggerChildren: 0.2 } } }}
+          variants={{
+            visible: { transition: { staggerChildren: 0.25 } },
+          }}
         >
           {services.map((service) => (
             <MagneticCard key={service.title} service={service} />
@@ -225,39 +237,45 @@ export default function ServicesPage() {
         </motion.div>
       </section>
 
-      {/* Trust */}
-      <section className="py-20 text-center text-gray-300">
-        <p className="text-lg">
-          Trusted by <span className="text-white font-semibold">50+</span>{" "}
-          brands · <span className="text-white font-semibold">4+ years</span>{" "}
-          experience · <span className="text-white font-semibold">99.9%</span>{" "}
-          uptime
-        </p>
+      {/* AUTHORITY STRIP */}
+      <section className="py-28 bg-linear-to-r from-[#24eda2]/10 to-[#00a3f8]/10 text-center">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-16">
+          <div>
+            <h3 className="text-4xl font-bold">+120%</h3>
+            <p className="text-gray-400 mt-2">Average Conversion Lift</p>
+          </div>
+          <div>
+            <h3 className="text-4xl font-bold">98%</h3>
+            <p className="text-gray-400 mt-2">Client Retention</p>
+          </div>
+          <div>
+            <h3 className="text-4xl font-bold">1.2s</h3>
+            <p className="text-gray-400 mt-2">Optimized Load Speeds</p>
+          </div>
+        </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-24 bg-linear-to-tr from-gray-900 via-black to-gray-800 text-center px-6">
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-4xl md:text-5xl font-extrabold mb-6"
-        >
-          Let’s Build Something Better
-        </motion.h2>
+      {/* CLOSE */}
+      <section className="py-44 text-center bg-black px-6">
+        <h2 className="text-5xl md:text-5xl font-extrabold mb-10 tracking-tight">
+          If You’re Serious About Growth —
+          <br />
+          Let’s Build the Platform That Proves It.
+        </h2>
 
-        <p className="text-lg text-gray-300 mb-10 max-w-2xl mx-auto">
-          Book a free strategy call and discover how we can elevate your digital
-          presence.
+        <p className="text-gray-400 max-w-2xl mx-auto mb-14">
+          We take on a limited number of high-impact projects each quarter.
         </p>
 
         <Link
           href="/contact"
-          className="inline-block px-10 py-4 rounded-xl bg-linear-to-r
-                     from-[#24eda2] to-[#00a3f8] text-white font-semibold
-                     shadow-lg hover:scale-105 transition"
+          className="inline-block px-14 py-6 rounded-2xl
+                     bg-linear-to-r from-[#24eda2] to-[#00a3f8]
+                     font-semibold text-lg
+                     hover:scale-105 transition duration-300
+                     shadow-[0_20px_60px_rgba(36,237,162,0.35)]"
         >
-          Book a Free Strategy Call
+          Apply to Work With Us
         </Link>
       </section>
     </main>

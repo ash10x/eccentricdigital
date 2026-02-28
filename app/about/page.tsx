@@ -28,7 +28,7 @@ export default function AboutPage() {
   const yParallax = useTransform(scrollY, [0, 500], [0, -120]);
 
   return (
-    <main className="bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white min-h-screen overflow-hidden">
+    <main className="bg-linear-to-br from-gray-900 via-black to-gray-800 text-white min-h-screen overflow-hidden">
       {/* ---------------- HERO ---------------- */}
       <section
         ref={ref}
@@ -45,7 +45,7 @@ export default function AboutPage() {
         </motion.div>
 
         {/* Depth overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/70 to-black/90" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/40 via-black/70 to-black/90" />
 
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -82,7 +82,7 @@ export default function AboutPage() {
       </section>
 
       {/* ---------------- VALUES ---------------- */}
-      <section className="py-20 md:py-28 bg-gradient-to-tr from-gray-900 via-black to-gray-800">
+      <section className="py-20 md:py-28 bg-linear-to-tr from-gray-900 via-black to-gray-800">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <FadeInUp>
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-16">
@@ -172,7 +172,7 @@ export default function AboutPage() {
       </section>
 
       {/* ---------------- CTA ---------------- */}
-      <section className="py-24 bg-gradient-to-b from-black to-gray-900 text-center">
+      <section className="py-24 bg-linear-to-b from-black to-gray-900 text-center">
         <FadeInUp>
           <h2 className="text-3xl md:text-5xl font-extrabold mb-6">
             Ready to Build Something Exceptional?
@@ -189,7 +189,7 @@ export default function AboutPage() {
         <FadeInUp delay={0.2}>
           <a
             href="/contact"
-            className="inline-block px-8 py-4 rounded-xl bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-white font-semibold shadow-lg hover:scale-105 transition"
+            className="inline-block px-8 py-4 rounded-xl bg-linear-to-r from-[#24eda2] to-[#00a3f8] text-white font-semibold shadow-lg hover:scale-105 transition"
           >
             Start Your Project
           </a>
