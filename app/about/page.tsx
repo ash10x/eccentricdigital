@@ -64,7 +64,7 @@ export default function AboutPage() {
         </motion.div>
 
         {/* Premium Depth Overlay */}
-        <div className="absolute inset-0 bg-linear-to-b from-black/30 via-black/60 to-black/95 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/30 via-black/60 to-black/95" />
 
         <motion.div
           initial={{ opacity: 0, y: 40 }}
