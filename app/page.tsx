@@ -93,7 +93,7 @@ export default function LandingPage() {
               className="px-12 py-5 rounded-xl border border-white/20 
               hover:bg-white/10 transition"
             >
-              View Case Studies
+              View Projects
             </Link>
           </div>
         </motion.div>
