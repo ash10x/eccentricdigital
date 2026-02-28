@@ -33,8 +33,7 @@ export default function LandingPage() {
       title: "The Wool Lab",
       description:
         "A cutting-edge mobile app that revolutionizes social networking.",
-      image:
-        "/portfolio/image-placeholder.pngc:\Users\Rodique Orlandi\Downloads\WhLiyU.png",
+      image: "/portfolio/image-placeholder.png",
       link: "https://loomidesigns.shop",
     },
   ];
