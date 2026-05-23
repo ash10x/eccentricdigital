@@ -190,6 +190,20 @@ export default function LandingPageClient({
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mt-20"
+        >
+          <Link
+            href="/projects"
+            className="inline-flex items-center gap-2 px-10 py-4 rounded-xl border border-white/20 hover:border-[#24eda2]/50 hover:bg-white/5 font-semibold transition duration-300"
+          >
+            View All Projects →
+          </Link>
+        </motion.div>
       </section>
 
       {/* AUTHORITY */}

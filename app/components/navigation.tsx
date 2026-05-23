@@ -18,6 +18,7 @@ const navLinks = [
     ],
   },
   { name: "Packages", href: "/packages" },
+  { name: "Portfolio", href: "/projects" },
   { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },
 ];
