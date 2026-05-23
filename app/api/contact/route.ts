@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { contactSubmissions } from "@/db/schema";
-import { Resend } from "resend";
+import { transporter } from "@/lib/mailer";
 import { userConfirmationEmail } from "@/lib/emails/userConfirmation";
 import { adminNotificationEmail } from "@/lib/emails/adminNotification";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
   try {
@@ -69,14 +67,14 @@ export async function POST(req: NextRequest) {
     });
 
     await Promise.allSettled([
-      resend.emails.send({
+      transporter.sendMail({
         from: `Eccentric Digital <${fromEmail}>`,
         to: email,
         subject: "Application Received — Eccentric Digital",
         html: userEmail.html,
         text: userEmail.text,
       }),
-      resend.emails.send({
+      transporter.sendMail({
         from: `Eccentric Digital <${fromEmail}>`,
         to: adminEmail,
         subject: `New Project Application — ${name}`,

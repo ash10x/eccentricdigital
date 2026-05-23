@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${urbanist.variable} antialiased`}>
+      <body className={`${urbanist.variable} antialiased`} style={{ fontFamily: "var(--font-urbanist), 'Segoe UI', system-ui, sans-serif" }}>
         <Navbar />
         {children}
         <Footer />

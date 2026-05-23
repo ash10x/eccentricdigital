@@ -5,98 +5,168 @@
 @import "swiper/css/effect-fade";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --accent: #24eda2;
+  --accent-blue: #00a3f8;
+  --bg: #060606;
+  --surface: #0d0d0d;
+  --surface-raised: #111111;
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-default: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(36, 237, 162, 0.25);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: #060606;
+  --color-foreground: #ffffff;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: #060606;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #060606;
+  color: #ffffff;
+  font-family: var(--font-urbanist), 'Segoe UI', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-.input-style {
-  width: 100%;
-  padding: 14px 16px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: 0.3s ease;
-  color: white;
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: #060606; }
+::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #24eda2; }
+
+/* ── Selection ── */
+::selection {
+  background: rgba(36, 237, 162, 0.18);
+  color: #ffffff;
 }
+
+/* ── Marquee ── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 38s linear infinite;
+  will-change: transform;
+}
+
+/* ── Gradient border utility ── */
+.gradient-border {
+  background:
+    linear-gradient(#0d0d0d, #0d0d0d) padding-box,
+    linear-gradient(135deg, rgba(36,237,162,0.3), rgba(0,163,248,0.3)) border-box;
+  border: 1px solid transparent;
+}
+
+.gradient-border-strong {
+  background:
+    linear-gradient(#0d0d0d, #0d0d0d) padding-box,
+    linear-gradient(135deg, #24eda2, #00a3f8) border-box;
+  border: 1px solid transparent;
+}
+
+/* ── Form inputs ── */
+.input-style {
+  display: block;
+  width: 100%;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+.input-style::placeholder { color: rgba(255, 255, 255, 0.2); }
 
 .input-style:focus {
-  outline: none;
-  border-color: #24eda2;
-  box-shadow: 0 0 20px rgba(36, 237, 162, 0.3);
+  border-color: rgba(36, 237, 162, 0.4);
+  background: rgba(36, 237, 162, 0.025);
+  box-shadow: 0 0 0 3px rgba(36, 237, 162, 0.07);
 }
 
+/* ── Primary button ── */
 .primary-btn {
-  padding: 14px 24px;
-  border-radius: 18px;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 28px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  font-family: inherit;
+  letter-spacing: -0.01em;
   background: linear-gradient(135deg, #24eda2, #00a3f8);
-  color: black;
-  transition: 0.3s ease;
+  color: #000000;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  border: none;
 }
 
 .primary-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(36, 237, 162, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 48px rgba(36, 237, 162, 0.3);
 }
 
+.primary-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── Package / time buttons ── */
 .package-btn,
 .time-btn {
-  padding: 14px;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(8px);
-  transition: all 0.3s ease;
+  padding: 14px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .package-btn:hover,
 .time-btn:hover {
-  border-color: #24eda2;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(36, 237, 162, 0.15);
+  border-color: rgba(36, 237, 162, 0.3);
+  background: rgba(36, 237, 162, 0.04);
 }
 
 .active-package {
-  background: linear-gradient(135deg, #24eda2, #00a3f8);
-  color: black;
-  border-color: transparent;
+  background: linear-gradient(135deg, #24eda2, #00a3f8) !important;
+  color: #000000 !important;
+  border-color: transparent !important;
+  font-weight: 700;
 }
 
+/* ── Select ── */
 .select-dark {
   appearance: none;
   -webkit-appearance: none;
-  -moz-appearance: none;
-  background-color: rgba(15, 15, 15, 0.95);
-  color: white;
+  background-color: rgba(13, 13, 13, 0.98);
+  color: #ffffff;
+  font-family: inherit;
 }
 
-.select-dark option {
-  background-color: #111;
-  color: white;
-}
-
-/* For Windows browsers */
+.select-dark option,
 select option {
-  background: #111;
-  color: white;
+  background: #111111;
+  color: #ffffff;
 }

@@ -1,14 +1,8 @@
 "use client";
 
-import {
-  motion,
-  AnimatePresence,
-  useScroll,
-  useTransform,
-  useSpring,
-} from "framer-motion";
-import Image from "next/image";
-import { useRef, useState } from "react";
+import { motion, useScroll, useSpring } from "framer-motion";
+import Link from "next/link";
+import { useRef } from "react";
 
 type Package = {
   id: number;
@@ -21,215 +15,211 @@ type Package = {
   isFeatured: boolean;
 };
 
-export default function PackagesPageClient({
-  packages,
-}: {
-  packages: Package[];
-}) {
-  const heroRef = useRef(null);
-  const [showComparison, setShowComparison] = useState(false);
-
-  const { scrollYProgress, scrollY } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-  const heroParallax = useTransform(scrollY, [0, 600], [0, -140]);
+export default function PackagesPageClient({ packages }: { packages: Package[] }) {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: containerRef });
+  const progressScale = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
 
   return (
-    <main className="bg-black text-white min-h-screen overflow-x-hidden">
-      {/* Scroll Progress Bar */}
+    <main ref={containerRef} className="bg-[#060606] text-white overflow-x-hidden relative">
+      {/* Scroll progress */}
       <motion.div
-        style={{ scaleX }}
-        className="fixed top-0 left-0 right-0 h-1 bg-[#24eda2] origin-left z-50"
+        style={{ scaleX: progressScale }}
+        className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#24eda2] to-[#00a3f8] origin-left z-50"
       />
 
-      {/* HERO */}
-      <section
-        ref={heroRef}
-        className="relative h-[65vh] flex items-center justify-center text-center px-6"
-      >
-        <motion.div style={{ y: heroParallax }} className="absolute inset-0">
-          <Image
-            src="/images/backdrop.png"
-            alt="Pricing Background"
-            fill
-            priority
-            className="object-cover opacity-40"
-          />
-        </motion.div>
+      {/* ── HERO ── */}
+      <section className="relative min-h-[80vh] flex items-center justify-center text-center px-6 overflow-hidden pt-24">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-[#24eda2]/[0.05] blur-[120px]" />
+          <div className="absolute bottom-0 right-1/3 w-[500px] h-[500px] rounded-full bg-[#00a3f8]/[0.04] blur-[100px]" />
+        </div>
 
-        <div className="absolute inset-0 bg-linear-to-b from-black/40 via-black/70 to-black" />
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] mb-10"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-[#24eda2] animate-pulse" />
+            <span className="text-[11px] uppercase tracking-[3px] text-white/50 font-semibold">
+              Investment Tiers
+            </span>
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="relative z-10 max-w-4xl"
-        >
-          <h1 className="text-5xl md:text-5xl font-black leading-tight mb-6">
-            Not Just Websites.
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="text-[52px] md:text-[76px] lg:text-[88px] font-black leading-[0.92] tracking-[-0.04em] mb-8"
+          >
+            Not Just
             <br />
-            <span className="bg-linear-to-r from-[#24eda2] text-6xl to-[#00a3f8] bg-clip-text text-transparent">
+            Websites.
+            <br />
+            <span className="bg-gradient-to-r from-[#24eda2] to-[#00a3f8] bg-clip-text text-transparent">
               Revenue Machines.
             </span>
-          </h1>
+          </motion.h1>
 
-          <p className="text-md text-gray-300 max-w-2xl mx-auto">
-            We don&apos;t build pages. We build unfair digital advantages. Choose
-            your growth tier.
-          </p>
-        </motion.div>
-      </section>
-
-      {/* STORY */}
-      <section className="py-32 bg-linear-to-b from-black to-neutral-900 text-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.92 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-        >
-          <h2 className="text-5xl md:text-5xl font-extrabold mb-6">
-            From &quot;Just a Website&quot;
-            <br />
-            to <span className="text-[#24eda2]">Growth Engine</span>
-          </h2>
-
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Strategy. Design. Psychology. Performance. Every layer engineered
-            for conversions.
-          </p>
-        </motion.div>
-      </section>
-
-      {/* PRICING CARDS */}
-      <section className="py-24 max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-        {packages.map((pkg) => (
-          <motion.div
-            key={pkg.id}
-            whileHover={{ scale: 1.04 }}
-            transition={{ duration: 0.4 }}
-            className={`
-              relative rounded-3xl backdrop-blur-2xl border
-              shadow-[0_20px_60px_rgba(0,0,0,0.6)]
-              overflow-hidden flex flex-col
-              transition-all duration-500
-              hover:-translate-y-4
-              hover:shadow-[0_0_80px_rgba(36,237,162,0.25)]
-              ${
-                pkg.isFeatured
-                  ? "border-[#24eda2] bg-linear-to-b from-black/80 to-black/60"
-                  : "border-white/10 bg-white/5"
-              }
-            `}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.25 }}
+            className="text-[17px] text-white/40 max-w-xl mx-auto leading-relaxed tracking-[-0.01em]"
           >
-            {pkg.isFeatured && (
-              <div className="absolute top-4 right-4 bg-[#24eda2] text-black text-xs px-3 py-1 rounded-full font-bold">
-                MOST POPULAR
-              </div>
-            )}
+            We don&apos;t build pages. We build unfair digital advantages.
+            Choose your growth tier.
+          </motion.p>
+        </div>
+      </section>
 
-            <Image
-              src={pkg.imageUrl}
-              alt={pkg.title}
-              width={600}
-              height={400}
-              className="w-full h-56 object-cover"
-            />
+      {/* ── PACKAGES ── */}
+      <section className="py-32 px-6 max-w-7xl mx-auto">
+        <div className="mb-16">
+          <p className="text-[10px] uppercase tracking-[4px] text-white/20 font-semibold mb-4">
+            Packages
+          </p>
+          <h2 className="text-[44px] md:text-[52px] font-black tracking-[-0.04em] leading-none">
+            Choose Your Tier
+          </h2>
+        </div>
 
-            <div className="p-8 flex flex-col grow">
-              <h3 className="text-2xl font-bold mb-3 text-center">
-                {pkg.title}
-              </h3>
-
-              <p className="text-gray-400 text-sm mb-6 text-center">
-                {pkg.description}
-              </p>
-
-              <ul className="text-sm text-gray-300 mb-8 space-y-2">
-                {pkg.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2">
-                    <span className="text-[#24eda2]">✔</span>
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-auto text-center">
-                <div className="mb-4">
-                  <span className="text-5xl font-black text-[#24eda2] after:content-['JMD'] after:text-sm after:font-bold after:ml-1">
-                    {pkg.price}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {packages.map((pkg, i) => (
+            <motion.div
+              key={pkg.id}
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.7, delay: i * 0.1 }}
+              className={`relative rounded-2xl flex flex-col overflow-hidden transition-all duration-500 ${
+                pkg.isFeatured
+                  ? "gradient-border-strong"
+                  : "border border-white/[0.06] bg-white/[0.02]"
+              }`}
+            >
+              {pkg.isFeatured && (
+                <div className="absolute top-5 right-5 z-10">
+                  <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-black text-[10px] font-bold uppercase tracking-[1.5px]">
+                    Most Popular
                   </span>
-                  <p className="text-gray-400 font-semibold text-sm mt-1.5">
-                    {pkg.paymentType}
-                  </p>
+                </div>
+              )}
 
-                  {pkg.isFeatured && (
-                    <p className="text-xs text-[#24eda2] mt-2">
-                      🔥 Most clients choose this tier
-                    </p>
-                  )}
+              <div className="p-8 flex flex-col grow">
+                {/* Header */}
+                <div className="mb-8 pb-8 border-b border-white/[0.06]">
+                  <h3 className="text-[22px] font-bold tracking-[-0.03em] mb-3">
+                    {pkg.title}
+                  </h3>
+                  <p className="text-white/40 text-[13px] leading-relaxed">
+                    {pkg.description}
+                  </p>
                 </div>
 
-                <a
+                {/* Price */}
+                <div className="mb-8">
+                  <div className="flex items-baseline gap-1">
+                    <span className={`text-[52px] font-black tracking-[-0.04em] leading-none ${pkg.isFeatured ? "bg-gradient-to-r from-[#24eda2] to-[#00a3f8] bg-clip-text text-transparent" : "text-white"}`}>
+                      {pkg.price}
+                    </span>
+                    <span className="text-white/30 text-[13px] font-medium ml-1">JMD</span>
+                  </div>
+                  <p className="text-[12px] text-white/25 uppercase tracking-[2px] mt-2 font-semibold">
+                    {pkg.paymentType}
+                  </p>
+                </div>
+
+                {/* Features */}
+                <ul className="space-y-3 mb-10 grow">
+                  {pkg.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-3">
+                      <span className="text-[#24eda2] text-[12px] mt-0.5 shrink-0 font-bold">✓</span>
+                      <span className="text-[13px] text-white/55 leading-snug">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* CTA */}
+                <Link
                   href={`/contact?package=${encodeURIComponent(pkg.title)}`}
-                  className="inline-block w-full py-3 rounded-xl
-                             bg-linear-to-r from-[#24eda2] to-[#00a3f8]
-                             text-black font-bold
-                             shadow-xl hover:scale-105 transition"
+                  className={`block w-full py-3.5 rounded-xl text-center text-[14px] font-bold tracking-[-0.01em] transition-all duration-300 ${
+                    pkg.isFeatured
+                      ? "bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-black hover:shadow-[0_16px_48px_rgba(36,237,162,0.3)] hover:-translate-y-0.5"
+                      : "border border-white/[0.1] text-white/70 hover:border-white/20 hover:text-white"
+                  }`}
                 >
                   Start This Project →
-                </a>
+                </Link>
               </div>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          ))}
+        </div>
       </section>
 
-      {/* COMPARISON */}
-      <div className="text-center pb-24">
-        <button
-          onClick={() => setShowComparison(!showComparison)}
-          className="text-[#24eda2] hover:underline"
-        >
-          {showComparison ? "Hide Full Comparison ↑" : "Compare All Features ↓"}
-        </button>
-      </div>
+      {/* ── TRUST STRIP ── */}
+      <section className="py-8 border-y border-white/[0.06]">
+        <div className="max-w-7xl mx-auto px-6 flex flex-wrap items-center justify-center gap-8 md:gap-16">
+          {[
+            "Strategy-led approach",
+            "Performance-first builds",
+            "Limited spots per quarter",
+            "Full ownership, no lock-in",
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08 }}
+              className="flex items-center gap-2.5"
+            >
+              <span className="w-1 h-1 rounded-full bg-[#24eda2]/60" />
+              <span className="text-[12px] text-white/30 font-medium tracking-[-0.01em]">
+                {item}
+              </span>
+            </motion.div>
+          ))}
+        </div>
+      </section>
 
-      <AnimatePresence>
-        {showComparison && (
+      {/* ── CTA ── */}
+      <section className="py-48 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[#24eda2]/[0.04] blur-[100px]" />
+        </div>
+
+        <div className="relative max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="max-w-5xl mx-auto px-6 pb-24 overflow-x-auto"
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
           >
-            <table className="w-full text-sm border border-white/10 rounded-2xl overflow-hidden">
-              <thead className="bg-white/10">
-                <tr>
-                  <th className="p-4 text-left">Feature</th>
-                  <th className="p-4">Business</th>
-                  <th className="p-4 text-[#24eda2]">E-commerce</th>
-                  <th className="p-4">Legacy</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/10">
-                {[
-                  ["Custom Design", "✔", "✔", "✔"],
-                  ["SEO Optimization", "✔", "✔", "✔"],
-                  ["Advanced Animations", "—", "—", "✔"],
-                  ["Priority Support", "—", "✔", "✔"],
-                ].map(([feature, a, b, c]) => (
-                  <tr key={feature}>
-                    <td className="p-4 text-gray-300">{feature}</td>
-                    <td className="p-4 text-center">{a}</td>
-                    <td className="p-4 text-center">{b}</td>
-                    <td className="p-4 text-center">{c}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <p className="text-[10px] uppercase tracking-[4px] text-white/20 font-semibold mb-8">
+              Not Sure Which Tier?
+            </p>
+            <h2 className="text-[52px] md:text-[68px] font-black leading-[0.9] tracking-[-0.04em] mb-8">
+              Let&apos;s Find the
+              <br />
+              <span className="bg-gradient-to-r from-[#24eda2] to-[#00a3f8] bg-clip-text text-transparent">
+                Right Fit Together.
+              </span>
+            </h2>
+            <p className="text-white/35 text-[16px] max-w-lg mx-auto mb-12 leading-relaxed tracking-[-0.01em]">
+              Book a free strategy call. We&apos;ll assess your goals and recommend
+              the package that gives you the highest ROI.
+            </p>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-3 px-10 py-5 rounded-xl bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-black font-bold text-[16px] tracking-[-0.02em] hover:shadow-[0_24px_80px_rgba(36,237,162,0.35)] hover:-translate-y-1 transition-all duration-300"
+            >
+              Book a Free Strategy Call →
+            </Link>
           </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      </section>
     </main>
   );
 }

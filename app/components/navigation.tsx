@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -20,48 +21,47 @@ const navLinks = [
   { name: "Packages", href: "/packages" },
   { name: "Portfolio", href: "/projects" },
   { name: "About", href: "/about" },
-  { name: "Contact", href: "/contact" },
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    setIsOpen(false);
+    setDropdownOpen(null);
+  }, [pathname]);
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full transition-colors duration-500 z-50 ${
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-black/70 backdrop-blur-xl border-b border-[#121212] shadow-lg"
+          ? "bg-[#060606]/80 backdrop-blur-2xl border-b border-white/[0.06]"
           : "bg-transparent border-b border-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Image
-              className="w-auto h-12 object-contain transition-all duration-300 ease-in-out hover:scale-105"
-              src="/eccentriclogo.png"
-              alt="Eccentric Digital Logo"
-              width={100}
-              height={50}
-            />
-          </motion.div>
+        <Link href="/" className="shrink-0">
+          <Image
+            src="/eccentriclogo.png"
+            alt="Eccentric Digital"
+            width={100}
+            height={40}
+            className="h-10 w-auto object-contain hover:opacity-80 transition-opacity"
+          />
         </Link>
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-8">
+        {/* Desktop nav */}
+        <div className="hidden md:flex items-center gap-1">
           {navLinks.map((link) =>
             link.dropdown ? (
               <div
@@ -70,31 +70,39 @@ export default function Navbar() {
                 onMouseEnter={() => setDropdownOpen(link.name)}
                 onMouseLeave={() => setDropdownOpen(null)}
               >
-                <Link href={link.href}>
-                  <button
-                    aria-expanded={dropdownOpen === link.name}
-                    className="text-white hover:text-[#24eda2] transition-colors text-[11pt] font-medium tracking-wider cursor-pointer"
-                    onClick={() => setDropdownOpen(null)}
-                  >
-                    {link.name}
-                  </button>
-                </Link>
+                <button
+                  className={`px-4 py-2 rounded-lg text-[13px] font-medium tracking-[-0.01em] transition-colors ${
+                    pathname.startsWith(link.href)
+                      ? "text-[#24eda2]"
+                      : "text-white/70 hover:text-white"
+                  }`}
+                >
+                  {link.name}
+                  <span className="ml-1 text-[10px] opacity-40">▾</span>
+                </button>
+
                 <AnimatePresence>
                   {dropdownOpen === link.name && (
                     <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.3 }}
-                      role="menu"
-                      className="absolute top-full left-0 mt-2 w-48 rounded-lg bg-black/95 backdrop-blur-md border border-white/30 shadow-xl overflow-hidden"
+                      initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute top-full left-0 mt-2 w-52 rounded-xl bg-[#0e0e0e] border border-white/[0.08] shadow-2xl shadow-black/60 overflow-hidden"
                     >
-                      {link.dropdown.map((item) => (
+                      {link.dropdown.map((item, i) => (
                         <Link
                           key={item.name}
                           href={item.href}
-                          role="menuitem"
-                          className="block px-4 py-3 text-white text-[10pt] tracking-wider hover:bg-[#00a3f8]/80 hover:scale-105 transition-transform"
+                          className={`flex items-center px-4 py-3 text-[13px] transition-colors ${
+                            i < link.dropdown.length - 1
+                              ? "border-b border-white/[0.05]"
+                              : ""
+                          } ${
+                            pathname === item.href
+                              ? "text-[#24eda2]"
+                              : "text-white/70 hover:text-white hover:bg-white/[0.03]"
+                          }`}
                         >
                           {item.name}
                         </Link>
@@ -107,116 +115,134 @@ export default function Navbar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className="text-white hover:text-[#24eda2] transition-colors text-[11pt] font-medium tracking-wider"
+                className={`px-4 py-2 rounded-lg text-[13px] font-medium tracking-[-0.01em] transition-colors ${
+                  pathname === link.href
+                    ? "text-[#24eda2]"
+                    : "text-white/70 hover:text-white"
+                }`}
               >
                 {link.name}
               </Link>
-            ),
+            )
           )}
+        </div>
+
+        <div className="hidden md:flex items-center gap-3">
           <Link
             href="/contact"
-            className="ml-4 px-4 py-2 rounded-lg bg-linear-to-r from-[#24eda2] to-[#00a3f8] text-white hover:opacity-90 transition hover:scale-105 text-[11.5pt] font-semibold tracking-wide"
+            className="px-5 py-2 rounded-lg text-[13px] font-semibold tracking-[-0.01em] bg-white text-black hover:bg-white/90 transition-colors"
           >
             Book Consultation
           </Link>
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile toggle */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden text-gray-100 focus:outline-none z-10"
+          className="md:hidden w-9 h-9 flex flex-col items-center justify-center gap-[5px]"
+          aria-label="Toggle menu"
         >
-          <svg
-            className="w-7 h-7"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            {isOpen ? (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            ) : (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            )}
-          </svg>
+          <motion.span
+            animate={isOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
+            className="block w-5 h-[1.5px] bg-white origin-center transition-all"
+          />
+          <motion.span
+            animate={isOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
+            className="block w-5 h-[1.5px] bg-white"
+          />
+          <motion.span
+            animate={isOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
+            className="block w-5 h-[1.5px] bg-white origin-center transition-all"
+          />
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile menu */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ duration: 0.4 }}
-            className="md:hidden bg-black/90 backdrop-blur-xl border-white/30 shadow-lg absolute top-0 right-0 w-3/4 h-screen flex flex-col items-center gap-6 py-20"
-          >
-            {navLinks.map((link) =>
-              link.dropdown ? (
-                <div key={link.name} className="flex flex-col items-center">
-                  <button
-                    onClick={() =>
-                      setDropdownOpen(
-                        dropdownOpen === link.name ? null : link.name,
-                      )
-                    }
-                    aria-expanded={dropdownOpen === link.name}
-                    className="text-lg text-white hover:text-[#24eda2] transition"
-                  >
-                    {link.name}
-                  </button>
-                  <AnimatePresence>
-                    {dropdownOpen === link.name && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.3 }}
-                        className="flex flex-col mt-2 gap-2"
-                      >
-                        {link.dropdown.map((item) => (
-                          <Link
-                            key={item.name}
-                            href={item.href}
-                            className="text-white hover:text-[#24eda2] transition"
-                            onClick={() => setIsOpen(false)}
-                          >
-                            {item.name}
-                          </Link>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ) : (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className="text-lg text-white hover:text-[#24eda2] transition"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {link.name}
-                </Link>
-              ),
-            )}
-            <Link
-              href="/contact"
-              className="px-6 py-3 rounded-lg bg-linear-to-r from-blue-600 to-purple-600 text-white hover:opacity-90 transition hover:scale-105"
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
               onClick={() => setIsOpen(false)}
+            />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="fixed top-0 right-0 h-full w-72 bg-[#0a0a0a] border-l border-white/[0.06] z-50 md:hidden flex flex-col"
             >
-              Book Consultation
-            </Link>
-          </motion.div>
+              <div className="flex items-center justify-between px-6 h-16 border-b border-white/[0.06]">
+                <span className="text-sm font-semibold text-white/40 uppercase tracking-widest">Menu</span>
+                <button onClick={() => setIsOpen(false)} className="text-white/40 hover:text-white">
+                  ✕
+                </button>
+              </div>
+
+              <div className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+                {navLinks.map((link) =>
+                  link.dropdown ? (
+                    <div key={link.name}>
+                      <button
+                        onClick={() => setDropdownOpen(dropdownOpen === link.name ? null : link.name)}
+                        className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-[15px] font-medium text-white/70 hover:text-white hover:bg-white/[0.03] transition-colors"
+                      >
+                        {link.name}
+                        <span className={`text-xs transition-transform ${dropdownOpen === link.name ? "rotate-180" : ""}`}>▾</span>
+                      </button>
+                      <AnimatePresence>
+                        {dropdownOpen === link.name && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="pl-4 overflow-hidden"
+                          >
+                            {link.dropdown.map((item) => (
+                              <Link
+                                key={item.name}
+                                href={item.href}
+                                onClick={() => setIsOpen(false)}
+                                className="block px-4 py-2.5 text-[14px] text-white/50 hover:text-white transition-colors"
+                              >
+                                {item.name}
+                              </Link>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ) : (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      onClick={() => setIsOpen(false)}
+                      className={`block px-4 py-3 rounded-xl text-[15px] font-medium transition-colors ${
+                        pathname === link.href
+                          ? "text-[#24eda2]"
+                          : "text-white/70 hover:text-white hover:bg-white/[0.03]"
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  )
+                )}
+              </div>
+
+              <div className="p-4 border-t border-white/[0.06]">
+                <Link
+                  href="/contact"
+                  onClick={() => setIsOpen(false)}
+                  className="block w-full py-3 rounded-xl text-center text-[14px] font-bold bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-black"
+                >
+                  Book Consultation
+                </Link>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </nav>
