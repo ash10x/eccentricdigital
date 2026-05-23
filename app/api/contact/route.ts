@@ -45,8 +45,10 @@ export async function POST(req: NextRequest) {
 
     const fromEmail =
       process.env.FROM_EMAIL || "noreply@eccentricdigital.com";
-    const adminEmail =
-      process.env.ADMIN_EMAIL || "admin@eccentricdigital.com";
+    const adminEmails = (process.env.ADMIN_EMAIL || "admin@eccentricdigital.com")
+      .split(",")
+      .map((e) => e.trim())
+      .filter(Boolean);
 
     const userEmail = userConfirmationEmail({
       name,
@@ -76,7 +78,7 @@ export async function POST(req: NextRequest) {
       }),
       transporter.sendMail({
         from: `Eccentric Digital <${fromEmail}>`,
-        to: adminEmail,
+        to: adminEmails,
         subject: `New Project Application — ${name}`,
         html: adminEmailContent.html,
         text: adminEmailContent.text,
