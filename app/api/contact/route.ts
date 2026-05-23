@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
       message,
     });
 
-    await Promise.allSettled([
+    const [userResult, adminResult] = await Promise.allSettled([
       transporter.sendMail({
         from: `Eccentric Digital <${fromEmail}>`,
         to: email,
@@ -82,6 +82,13 @@ export async function POST(req: NextRequest) {
         text: adminEmailContent.text,
       }),
     ]);
+
+    if (userResult.status === "rejected") {
+      console.error("User confirmation email failed:", userResult.reason);
+    }
+    if (adminResult.status === "rejected") {
+      console.error("Admin notification email failed:", adminResult.reason);
+    }
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
