@@ -16,6 +16,7 @@ export default async function PackagesPage() {
       features: packages.features,
       paymentType: packages.paymentType,
       isFeatured: packages.isFeatured,
+      serviceKeys: packages.serviceKeys,
     })
     .from(packages)
     .orderBy(asc(packages.displayOrder));

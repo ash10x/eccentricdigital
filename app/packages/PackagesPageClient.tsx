@@ -13,9 +13,35 @@ type Package = {
   features: string[];
   paymentType: string;
   isFeatured: boolean;
+  serviceKeys: string[];
 };
 
+const categories = [
+  { key: "custom-design", label: "Custom Web Design" },
+  { key: "ecommerce", label: "E-commerce" },
+  { key: "remodeling", label: "Website Remodeling" },
+  { key: "maintenance", label: "Website Maintenance" },
+  { key: "__other__", label: "Quick Start" },
+];
+
+function groupPackages(packages: Package[]) {
+  const groups: Record<string, Package[]> = {};
+  for (const cat of categories) groups[cat.key] = [];
+
+  for (const pkg of packages) {
+    const key = pkg.serviceKeys[0] ?? "__other__";
+    const matched = categories.find((c) => c.key === key);
+    (matched ? groups[matched.key] : groups["__other__"]).push(pkg);
+  }
+
+  return categories.filter((c) => groups[c.key].length > 0).map((c) => ({
+    ...c,
+    packages: groups[c.key],
+  }));
+}
+
 export default function PackagesPageClient({ packages }: { packages: Package[] }) {
+  const grouped = groupPackages(packages);
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const progressScale = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
@@ -76,87 +102,93 @@ export default function PackagesPageClient({ packages }: { packages: Package[] }
       </section>
 
       {/* ── PACKAGES ── */}
-      <section className="py-32 px-6 max-w-7xl mx-auto">
-        <div className="mb-16">
-          <p className="text-[10px] uppercase tracking-[4px] text-white/20 font-semibold mb-4">
-            Packages
-          </p>
-          <h2 className="text-[44px] md:text-[52px] font-black tracking-[-0.04em] leading-none">
-            Choose Your Tier
-          </h2>
-        </div>
+      <section className="py-32 px-6 max-w-7xl mx-auto space-y-24">
+        {grouped.map((group) => (
+          <div key={group.key}>
+            {/* Category header */}
+            <div className="mb-12">
+              <p className="text-[10px] uppercase tracking-[4px] text-white/20 font-semibold mb-3">
+                Service
+              </p>
+              <h2 className="text-[36px] md:text-[44px] font-black tracking-[-0.04em] leading-none">
+                {group.label}
+              </h2>
+              <div className="mt-4 h-[1px] bg-gradient-to-r from-[#24eda2]/20 to-transparent" />
+            </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {packages.map((pkg, i) => (
-            <motion.div
-              key={pkg.id}
-              initial={{ opacity: 0, y: 60 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.7, delay: i * 0.1 }}
-              className={`relative rounded-2xl flex flex-col overflow-hidden transition-all duration-500 ${
-                pkg.isFeatured
-                  ? "gradient-border-strong"
-                  : "border border-white/[0.06] bg-white/[0.02]"
-              }`}
-            >
-              {pkg.isFeatured && (
-                <div className="absolute top-5 right-5 z-10">
-                  <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-black text-[10px] font-bold uppercase tracking-[1.5px]">
-                    Most Popular
-                  </span>
-                </div>
-              )}
-
-              <div className="p-8 flex flex-col grow">
-                {/* Header */}
-                <div className="mb-8 pb-8 border-b border-white/[0.06]">
-                  <h3 className="text-[22px] font-bold tracking-[-0.03em] mb-3">
-                    {pkg.title}
-                  </h3>
-                  <p className="text-white/40 text-[13px] leading-relaxed">
-                    {pkg.description}
-                  </p>
-                </div>
-
-                {/* Price */}
-                <div className="mb-8">
-                  <div className="flex items-baseline gap-1">
-                    <span className={`text-[52px] font-black tracking-[-0.04em] leading-none ${pkg.isFeatured ? "bg-gradient-to-r from-[#24eda2] to-[#00a3f8] bg-clip-text text-transparent" : "text-white"}`}>
-                      {pkg.price}
-                    </span>
-                    <span className="text-white/30 text-[13px] font-medium ml-1">JMD</span>
-                  </div>
-                  <p className="text-[12px] text-white/25 uppercase tracking-[2px] mt-2 font-semibold">
-                    {pkg.paymentType}
-                  </p>
-                </div>
-
-                {/* Features */}
-                <ul className="space-y-3 mb-10 grow">
-                  {pkg.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3">
-                      <span className="text-[#24eda2] text-[12px] mt-0.5 shrink-0 font-bold">✓</span>
-                      <span className="text-[13px] text-white/55 leading-snug">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* CTA */}
-                <Link
-                  href={`/contact?package=${encodeURIComponent(pkg.title)}`}
-                  className={`block w-full py-3.5 rounded-xl text-center text-[14px] font-bold tracking-[-0.01em] transition-all duration-300 ${
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {group.packages.map((pkg, i) => (
+                <motion.div
+                  key={pkg.id}
+                  initial={{ opacity: 0, y: 60 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ duration: 0.7, delay: i * 0.1 }}
+                  className={`relative rounded-2xl flex flex-col overflow-hidden transition-all duration-500 ${
                     pkg.isFeatured
-                      ? "bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-black hover:shadow-[0_16px_48px_rgba(36,237,162,0.3)] hover:-translate-y-0.5"
-                      : "border border-white/[0.1] text-white/70 hover:border-white/20 hover:text-white"
+                      ? "gradient-border-strong"
+                      : "border border-white/[0.06] bg-white/[0.02]"
                   }`}
                 >
-                  Start This Project →
-                </Link>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                  {pkg.isFeatured && (
+                    <div className="absolute top-5 right-5 z-10">
+                      <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-black text-[10px] font-bold uppercase tracking-[1.5px]">
+                        Most Popular
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="p-8 flex flex-col grow">
+                    {/* Header */}
+                    <div className="mb-8 pb-8 border-b border-white/[0.06]">
+                      <h3 className="text-[22px] font-bold tracking-[-0.03em] mb-3">
+                        {pkg.title}
+                      </h3>
+                      <p className="text-white/40 text-[13px] leading-relaxed">
+                        {pkg.description}
+                      </p>
+                    </div>
+
+                    {/* Price */}
+                    <div className="mb-8">
+                      <div className="flex items-baseline gap-1">
+                        <span className={`text-[52px] font-black tracking-[-0.04em] leading-none ${pkg.isFeatured ? "bg-gradient-to-r from-[#24eda2] to-[#00a3f8] bg-clip-text text-transparent" : "text-white"}`}>
+                          {pkg.price}
+                        </span>
+                        <span className="text-white/30 text-[13px] font-medium ml-1">JMD</span>
+                      </div>
+                      <p className="text-[12px] text-white/25 uppercase tracking-[2px] mt-2 font-semibold">
+                        {pkg.paymentType}
+                      </p>
+                    </div>
+
+                    {/* Features */}
+                    <ul className="space-y-3 mb-10 grow">
+                      {pkg.features.map((feature) => (
+                        <li key={feature} className="flex items-start gap-3">
+                          <span className="text-[#24eda2] text-[12px] mt-0.5 shrink-0 font-bold">✓</span>
+                          <span className="text-[13px] text-white/55 leading-snug">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    {/* CTA */}
+                    <Link
+                      href={`/contact?package=${encodeURIComponent(pkg.title)}`}
+                      className={`block w-full py-3.5 rounded-xl text-center text-[14px] font-bold tracking-[-0.01em] transition-all duration-300 ${
+                        pkg.isFeatured
+                          ? "bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-black hover:shadow-[0_16px_48px_rgba(36,237,162,0.3)] hover:-translate-y-0.5"
+                          : "border border-white/[0.1] text-white/70 hover:border-white/20 hover:text-white"
+                      }`}
+                    >
+                      Start This Project →
+                    </Link>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        ))}
       </section>
 
       {/* ── TRUST STRIP ── */}
