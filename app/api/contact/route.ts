@@ -4,7 +4,6 @@ import { contactSubmissions } from "@/db/schema";
 import { transporter } from "@/lib/mailer";
 import { userConfirmationEmail } from "@/lib/emails/userConfirmation";
 import { adminNotificationEmail } from "@/lib/emails/adminNotification";
-import { sendWhatsAppNotification } from "@/lib/whatsapp";
 
 export async function POST(req: NextRequest) {
   try {
@@ -69,7 +68,7 @@ export async function POST(req: NextRequest) {
       message,
     });
 
-    const [userResult, adminResult, whatsappResult] = await Promise.allSettled([
+    const [userResult, adminResult] = await Promise.allSettled([
       transporter.sendMail({
         from: `Eccentric Digital <${fromEmail}>`,
         to: email,
@@ -84,15 +83,6 @@ export async function POST(req: NextRequest) {
         html: adminEmailContent.html,
         text: adminEmailContent.text,
       }),
-      sendWhatsAppNotification({
-        name,
-        email,
-        service,
-        selectedPackage,
-        date,
-        time,
-        message,
-      }),
     ]);
 
     if (userResult.status === "rejected") {
@@ -100,9 +90,6 @@ export async function POST(req: NextRequest) {
     }
     if (adminResult.status === "rejected") {
       console.error("Admin notification email failed:", adminResult.reason);
-    }
-    if (whatsappResult.status === "rejected") {
-      console.error("WhatsApp notification failed:", whatsappResult.reason);
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
