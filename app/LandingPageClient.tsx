@@ -86,7 +86,7 @@ export default function LandingPageClient({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/4 border border-white/[0.08] mb-10"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/4 border border-white/[0.08] mb-10 mt-8"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-[#24eda2] animate-pulse mt-1.5" />
             <span className="text-[11px] uppercase tracking-[3px] text-white/50 font-semibold">
@@ -129,32 +129,19 @@ export default function LandingPageClient({
           >
             <Link
               href="/contact"
-              className="px-8 py-4 rounded-xl bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-black font-bold text-[15px] tracking-[-0.01em] hover:shadow-[0_20px_60px_rgba(36,237,162,0.3)] hover:-translate-y-0.5 transition-all duration-300"
+              className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-black font-bold text-[13px] tracking-[-0.01em] hover:shadow-[0_20px_60px_rgba(36,237,162,0.3)] hover:-translate-y-0.5 transition-all duration-300"
             >
               Start a Project
             </Link>
             <Link
               href="#portfolio"
-              className="px-8 py-4 rounded-xl border border-white/[0.1] text-white/70 font-semibold text-[15px] tracking-[-0.01em] hover:border-white/20 hover:text-white transition-all duration-300"
+              className="px-6 py-3 rounded-xl border border-white/[0.1] text-white/70 font-semibold text-[13px] tracking-[-0.01em] hover:border-white/20 hover:text-white transition-all duration-300"
             >
               View Portfolio ↓
             </Link>
           </motion.div>
         </div>
 
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        >
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-            className="w-[1px] h-8 bg-gradient-to-b from-transparent to-white/20"
-          />
-        </motion.div>
       </section>
 
       {/* ── MARQUEE ── */}

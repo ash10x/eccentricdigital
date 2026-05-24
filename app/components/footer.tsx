@@ -61,7 +61,22 @@ export default function Footer() {
               position brands as category leaders.
             </p>
 
-            <div className="flex flex-wrap gap-5 mt-8">
+            <div className="flex flex-col gap-2.5 mt-8">
+              <a
+                href="mailto:support@eccentricdigital.com"
+                className="text-[13px] text-white/35 hover:text-[#24eda2] transition-colors"
+              >
+                support@eccentricdigital.com
+              </a>
+              <a
+                href="tel:+18768449466"
+                className="text-[13px] text-white/35 hover:text-[#24eda2] transition-colors"
+              >
+                +1 (876) 844-9466
+              </a>
+            </div>
+
+            <div className="flex flex-wrap gap-5 mt-6">
               {socials.map((s) => (
                 <a
                   key={s.name}
