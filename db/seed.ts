@@ -3,7 +3,7 @@ config({ path: ".env.local" });
 
 async function seed() {
   const { db } = await import("./index");
-  const { projects, teamMembers, stats, services, packages } = await import(
+  const { projects, teamMembers, stats, services, packages, siteSettings, socialLinks } = await import(
     "./schema"
   );
 
@@ -14,6 +14,8 @@ async function seed() {
   await db.delete(stats);
   await db.delete(teamMembers);
   await db.delete(projects);
+  await db.delete(socialLinks);
+  await db.delete(siteSettings);
 
   await db.insert(projects).values([
     {
@@ -265,6 +267,18 @@ async function seed() {
       serviceKeys: [],
       displayOrder: 5,
     },
+  ]);
+
+  await db.insert(siteSettings).values([
+    { key: "contact_email", value: "support@eccentricdigital.com" },
+    { key: "contact_phone_display", value: "+1 (876) 844-9466" },
+    { key: "contact_phone_raw", value: "+18768449466" },
+  ]);
+
+  await db.insert(socialLinks).values([
+    { platform: "instagram", url: "https://instagram.com", displayOrder: 0 },
+    { platform: "twitter", url: "https://twitter.com", displayOrder: 1 },
+    { platform: "linkedin", url: "https://linkedin.com", displayOrder: 2 },
   ]);
 
   console.log("✅ Database seeded successfully!");

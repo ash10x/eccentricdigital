@@ -60,6 +60,19 @@ export const packages = pgTable("packages", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const siteSettings = pgTable("site_settings", {
+  id: serial("id").primaryKey(),
+  key: varchar("key", { length: 100 }).notNull().unique(),
+  value: text("value").notNull(),
+});
+
+export const socialLinks = pgTable("social_links", {
+  id: serial("id").primaryKey(),
+  platform: varchar("platform", { length: 50 }).notNull(),
+  url: varchar("url", { length: 500 }).notNull(),
+  displayOrder: integer("display_order").default(0).notNull(),
+});
+
 export const contactSubmissions = pgTable("contact_submissions", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
