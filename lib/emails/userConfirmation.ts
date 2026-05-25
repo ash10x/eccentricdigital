@@ -52,7 +52,7 @@ export function userConfirmationEmail(data: {
               <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
                 <tr>
                   <td>
-                    <img src="	https://www.eccentricdigital.com/_next/image?url=%2Feccentriclogo.png&w=128&q=75" alt="Eccentric Digital" width="120" style="display:block;">
+                    <img src="	https://www.eccentricdigital.com/_next/image?url=%2Feccentriclogo.png&w=128&q=75" alt="Eccentric Digital" width="60" style="display:block;">
                   </td>
                   <td align="right">
                     <span style="font-size:11px;color:#4b5563;text-transform:uppercase;letter-spacing:2px;">Confirmation</span>
@@ -166,7 +166,8 @@ export function userConfirmationEmail(data: {
                 <!-- Bank cards -->
                 <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
                   <tr>
-                    ${BANK_DETAILS.map((bank) => `
+                    ${BANK_DETAILS.map(
+                      (bank) => `
                     <td width="48%" style="vertical-align:top;padding:0 4px;">
                       <div style="background:#111111;border:1px solid #222222;border-radius:10px;padding:16px;">
                         <p style="margin:0 0 12px;font-size:10px;color:#24eda2;text-transform:uppercase;letter-spacing:2px;font-weight:700;">${bank.bank}</p>
@@ -180,7 +181,9 @@ export function userConfirmationEmail(data: {
                           <tr><td style="padding:4px 0;font-size:11px;color:#4b5563;">Account Type</td></tr>
                           <tr><td style="padding:0 0 ${bank.wire ? "12px" : "0"};font-size:12px;color:#ffffff;font-weight:600;">${bank.accountType}</td></tr>
                         </table>
-                        ${bank.wire ? `
+                        ${
+                          bank.wire
+                            ? `
                         <div style="border-top:1px solid #2a2a2a;margin-top:4px;padding-top:12px;">
                           <p style="margin:0 0 8px;font-size:9px;color:#00a3f8;text-transform:uppercase;letter-spacing:2px;font-weight:700;">International Wire</p>
                           <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
@@ -188,16 +191,27 @@ export function userConfirmationEmail(data: {
                             <tr><td style="padding:0 0 6px;font-size:12px;color:#ffffff;font-weight:700;font-family:monospace;letter-spacing:1px;">${bank.wire.swiftCode}</td></tr>
                             <tr><td style="padding:3px 0;font-size:10px;color:#4b5563;">Bank Address</td></tr>
                             <tr><td style="padding:0 0 6px;font-size:11px;color:#d1d5db;font-weight:500;line-height:1.4;">${bank.wire.bankAddress}</td></tr>
-                            ${bank.wire.correspondentBank ? `
+                            ${
+                              bank.wire.correspondentBank
+                                ? `
                             <tr><td style="padding:3px 0;font-size:10px;color:#4b5563;">Correspondent Bank</td></tr>
-                            <tr><td style="padding:0 0 6px;font-size:11px;color:#d1d5db;font-weight:500;">${bank.wire.correspondentBank}</td></tr>` : ""}
-                            ${bank.wire.correspondentSwift ? `
+                            <tr><td style="padding:0 0 6px;font-size:11px;color:#d1d5db;font-weight:500;">${bank.wire.correspondentBank}</td></tr>`
+                                : ""
+                            }
+                            ${
+                              bank.wire.correspondentSwift
+                                ? `
                             <tr><td style="padding:3px 0;font-size:10px;color:#4b5563;">Correspondent SWIFT</td></tr>
-                            <tr><td style="padding:0;font-size:11px;color:#d1d5db;font-weight:600;font-family:monospace;">${bank.wire.correspondentSwift}</td></tr>` : ""}
+                            <tr><td style="padding:0;font-size:11px;color:#d1d5db;font-weight:600;font-family:monospace;">${bank.wire.correspondentSwift}</td></tr>`
+                                : ""
+                            }
                           </table>
-                        </div>` : ""}
+                        </div>`
+                            : ""
+                        }
                       </div>
-                    </td>`).join('<td width="4%"></td>')}
+                    </td>`,
+                    ).join('<td width="4%"></td>')}
                   </tr>
                 </table>
 

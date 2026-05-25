@@ -242,7 +242,18 @@ export default function Navbar() {
                 )}
               </div>
 
-              <div className="p-4 border-t border-white/[0.06]">
+              <div className="p-4 border-t border-white/[0.06] space-y-2">
+                <Link
+                  href="/payment"
+                  onClick={() => setIsOpen(false)}
+                  className={`block w-full py-3 rounded-xl text-center text-[14px] font-medium border transition-colors ${
+                    pathname === "/payment"
+                      ? "border-[#24eda2]/40 text-[#24eda2]"
+                      : "border-white/8 text-white/50 hover:border-white/20 hover:text-white"
+                  }`}
+                >
+                  Payment Portal
+                </Link>
                 <Link
                   href="/contact"
                   onClick={() => setIsOpen(false)}
