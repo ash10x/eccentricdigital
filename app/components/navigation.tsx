@@ -48,7 +48,7 @@ export default function Navbar() {
           : "bg-transparent border-b border-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between relative">
         {/* Logo */}
         <Link href="/" className="shrink-0">
           <Image
@@ -61,7 +61,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-1">
+        <div className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
           {navLinks.map((link) =>
             link.dropdown ? (
               <div
@@ -128,6 +128,16 @@ export default function Navbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
+          <Link
+            href="/payment"
+            className={`px-4 py-2 rounded-lg text-[13px] font-medium tracking-[-0.01em] border transition-colors ${
+              pathname === "/payment"
+                ? "border-[#24eda2]/40 text-[#24eda2]"
+                : "border-white/[0.08] text-white/50 hover:border-white/20 hover:text-white"
+            }`}
+          >
+            Payment Portal
+          </Link>
           <Link
             href="/contact"
             className="px-5 py-2 rounded-lg text-[13px] font-semibold tracking-[-0.01em] bg-white text-black hover:bg-white/90 transition-colors"

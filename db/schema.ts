@@ -75,13 +75,16 @@ export const socialLinks = pgTable("social_links", {
 
 export const contactSubmissions = pgTable("contact_submissions", {
   id: serial("id").primaryKey(),
+  referenceNumber: varchar("reference_number", { length: 20 }).notNull().default(""),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull(),
   phone: varchar("phone", { length: 30 }).notNull().default(""),
   service: varchar("service", { length: 255 }).notNull(),
   selectedPackage: varchar("selected_package", { length: 255 }).notNull(),
+  price: varchar("price", { length: 50 }).notNull().default(""),
   preferredDate: varchar("preferred_date", { length: 50 }).notNull(),
   preferredTime: varchar("preferred_time", { length: 20 }).notNull(),
   message: text("message").default(""),
+  paymentStatus: varchar("payment_status", { length: 20 }).notNull().default("unpaid"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
-import { useState, Suspense, useRef } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import SearchParamsSync from "../components/searchParamsSync";
 
 export default function ContactPageClient({
@@ -103,9 +103,10 @@ export default function ContactPageClient({
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || "Failed to submit");
       }
+      const data = await res.json();
       setToast({
         type: "success",
-        message: "Application received. We'll review and respond within 24 hours.",
+        message: `Application received! Ref: ${data.referenceNumber}. Check your email for details.`,
       });
       setTimeout(() => {
         setToast(null);
@@ -119,10 +120,21 @@ export default function ContactPageClient({
     }
   };
 
-  const timeSlots = Array.from({ length: 18 }, (_, i) => {
-    const hour = 9 + Math.floor(i / 2);
-    return `${hour.toString().padStart(2, "0")}:${i % 2 ? "30" : "00"}`;
-  });
+  const timeSlots: string[] = [];
+  for (let mins = 8 * 60; mins <= 17 * 60; mins += 30) {
+    const h24 = Math.floor(mins / 60);
+    const m = mins % 60;
+    const period = h24 >= 12 ? "PM" : "AM";
+    const h12 = h24 > 12 ? h24 - 12 : h24 === 0 ? 12 : h24;
+    timeSlots.push(`${h12}:${m === 0 ? "00" : "30"} ${period}`);
+  }
+
+  // Auto-fill price when package is pre-selected via URL params
+  useEffect(() => {
+    if (formData.package && !formData.price && packagePrices[formData.package]) {
+      setFormData((prev) => ({ ...prev, price: packagePrices[formData.package] }));
+    }
+  }, [formData.package, formData.price, packagePrices]);
 
   const stepLabels = ["About You", "Project", "Schedule"];
 

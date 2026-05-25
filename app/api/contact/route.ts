@@ -4,6 +4,7 @@ import { contactSubmissions } from "@/db/schema";
 import { transporter } from "@/lib/mailer";
 import { userConfirmationEmail } from "@/lib/emails/userConfirmation";
 import { adminNotificationEmail } from "@/lib/emails/adminNotification";
+import { generateRefNumber } from "@/lib/generateRefNumber";
 
 export async function POST(req: NextRequest) {
   try {
@@ -37,12 +38,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const referenceNumber = generateRefNumber();
+
     await db.insert(contactSubmissions).values({
+      referenceNumber,
       name,
       email,
       phone,
       service,
       selectedPackage,
+      price: price || "",
       preferredDate: date,
       preferredTime: time,
       message: message || "",
@@ -60,6 +65,7 @@ export async function POST(req: NextRequest) {
       service,
       selectedPackage,
       price,
+      referenceNumber,
       date,
       time,
     });
@@ -71,6 +77,7 @@ export async function POST(req: NextRequest) {
       service,
       selectedPackage,
       price,
+      referenceNumber,
       date,
       time,
       message,
@@ -80,14 +87,14 @@ export async function POST(req: NextRequest) {
       transporter.sendMail({
         from: `Eccentric Digital <${fromEmail}>`,
         to: email,
-        subject: "Application Received — Eccentric Digital",
+        subject: `Application Received — Ref: ${referenceNumber}`,
         html: userEmail.html,
         text: userEmail.text,
       }),
       transporter.sendMail({
         from: `Eccentric Digital <${fromEmail}>`,
         to: adminEmails,
-        subject: `New Project Application — ${name}`,
+        subject: `New Application — ${name} [${referenceNumber}]`,
         html: adminEmailContent.html,
         text: adminEmailContent.text,
       }),
@@ -100,7 +107,7 @@ export async function POST(req: NextRequest) {
       console.error("Admin notification email failed:", adminResult.reason);
     }
 
-    return NextResponse.json({ success: true }, { status: 200 });
+    return NextResponse.json({ success: true, referenceNumber }, { status: 200 });
   } catch (err) {
     console.error("Contact form error:", err);
     return NextResponse.json(

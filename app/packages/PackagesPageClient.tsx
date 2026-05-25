@@ -254,7 +254,7 @@ export default function PackagesPageClient({ packages }: { packages: Package[] }
 
                       {/* CTA */}
                       <Link
-                        href={`/contact?package=${encodeURIComponent(pkg.title)}`}
+                        href={`/contact?service=${encodeURIComponent(pkg.serviceKeys[0] ?? "")}&package=${encodeURIComponent(pkg.title)}`}
                         className={`block w-full py-3.5 rounded-xl text-center text-[14px] font-bold tracking-[-0.01em] transition-all duration-300 ${
                           pkg.isFeatured
                             ? "bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-black hover:shadow-[0_16px_48px_rgba(36,237,162,0.3)] hover:-translate-y-0.5"
