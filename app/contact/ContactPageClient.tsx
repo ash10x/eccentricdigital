@@ -19,6 +19,7 @@ export default function ContactPageClient({
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     service: "",
     package: "",
     date: "",
@@ -45,6 +46,10 @@ export default function ContactPageClient({
         showError("Enter a valid name and professional email.");
         return;
       }
+      if (!formData.phone || formData.phone.replace(/\D/g, "").length < 7) {
+        showError("Enter a valid phone number.");
+        return;
+      }
     }
     if (step === 2 && (!formData.service || !formData.package)) {
       showError("Select a service and package.");
@@ -61,6 +66,8 @@ export default function ContactPageClient({
     const { name, value } = e.target;
     if (name === "service") {
       setFormData((prev) => ({ ...prev, service: value, package: "" }));
+    } else if (name === "phone") {
+      setFormData((prev) => ({ ...prev, phone: value.replace(/[^\d+\-\s()]/g, "") }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -80,6 +87,7 @@ export default function ContactPageClient({
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
+          phone: formData.phone,
           service: formData.service,
           package: formData.package,
           date: formData.date,
@@ -98,7 +106,7 @@ export default function ContactPageClient({
       setTimeout(() => {
         setToast(null);
         setStep(1);
-        setFormData({ name: "", email: "", service: "", package: "", date: "", time: "", message: "" });
+        setFormData({ name: "", email: "", phone: "", service: "", package: "", date: "", time: "", message: "" });
       }, 4000);
     } catch {
       showError("Something went wrong. Please try again.");
@@ -284,6 +292,15 @@ export default function ContactPageClient({
                       placeholder="Your Email"
                       value={formData.email}
                       onChange={handleChange}
+                      className="input-style"
+                    />
+                    <input
+                      type="tel"
+                      name="phone"
+                      placeholder="Your Phone Number"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      inputMode="numeric"
                       className="input-style"
                     />
                   </div>

@@ -8,6 +8,7 @@ const serviceLabels: Record<string, string> = {
 export function adminNotificationEmail(data: {
   name: string;
   email: string;
+  phone: string;
   service: string;
   selectedPackage: string;
   date: string;
@@ -18,6 +19,7 @@ export function adminNotificationEmail(data: {
   const rows = [
     ["Name", data.name],
     ["Email", `<a href="mailto:${data.email}" style="color:#24eda2;text-decoration:none;">${data.email}</a>`],
+    ["Phone", `<a href="tel:${data.phone}" style="color:#24eda2;text-decoration:none;">${data.phone}</a>`],
     ["Service", serviceLabel],
     ["Package", data.selectedPackage],
     ["Preferred Date", data.date],
@@ -122,6 +124,7 @@ export function adminNotificationEmail(data: {
 
 ${data.name} (${data.email}) submitted a consultation request.
 
+Phone: ${data.phone}
 Service: ${serviceLabel}
 Package: ${data.selectedPackage}
 Date: ${data.date}

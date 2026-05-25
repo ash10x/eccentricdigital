@@ -11,6 +11,7 @@ export async function POST(req: NextRequest) {
     const {
       name,
       email,
+      phone,
       service,
       package: selectedPackage,
       date,
@@ -19,6 +20,7 @@ export async function POST(req: NextRequest) {
     } = body as {
       name: string;
       email: string;
+      phone: string;
       service: string;
       package: string;
       date: string;
@@ -26,7 +28,7 @@ export async function POST(req: NextRequest) {
       message?: string;
     };
 
-    if (!name || !email || !service || !selectedPackage || !date || !time) {
+    if (!name || !email || !phone || !service || !selectedPackage || !date || !time) {
       return NextResponse.json(
         { error: "Missing required fields." },
         { status: 400 }
@@ -36,6 +38,7 @@ export async function POST(req: NextRequest) {
     await db.insert(contactSubmissions).values({
       name,
       email,
+      phone,
       service,
       selectedPackage,
       preferredDate: date,
@@ -61,6 +64,7 @@ export async function POST(req: NextRequest) {
     const adminEmailContent = adminNotificationEmail({
       name,
       email,
+      phone,
       service,
       selectedPackage,
       date,

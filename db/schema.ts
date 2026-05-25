@@ -77,6 +77,7 @@ export const contactSubmissions = pgTable("contact_submissions", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 30 }).notNull().default(""),
   service: varchar("service", { length: 255 }).notNull(),
   selectedPackage: varchar("selected_package", { length: 255 }).notNull(),
   preferredDate: varchar("preferred_date", { length: 50 }).notNull(),
