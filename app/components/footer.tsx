@@ -30,6 +30,8 @@ const footerNav = [
       { name: "Packages", href: "/packages" },
       { name: "Portfolio", href: "/projects" },
       { name: "Book Consultation", href: "/contact" },
+      { name: "Payment Portal", href: "/payment" },
+      { name: "FAQs", href: "/faq" },
     ],
   },
 ];
