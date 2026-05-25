@@ -11,17 +11,19 @@ export function adminNotificationEmail(data: {
   phone: string;
   service: string;
   selectedPackage: string;
+  price?: string;
   date: string;
   time: string;
   message?: string;
 }) {
   const serviceLabel = serviceLabels[data.service] || data.service;
-  const rows = [
+  const rows: [string, string][] = [
     ["Name", data.name],
     ["Email", `<a href="mailto:${data.email}" style="color:#24eda2;text-decoration:none;">${data.email}</a>`],
     ["Phone", `<a href="tel:${data.phone}" style="color:#24eda2;text-decoration:none;">${data.phone}</a>`],
     ["Service", serviceLabel],
     ["Package", data.selectedPackage],
+    ...(data.price ? [["Price", `<span style="color:#24eda2;font-weight:700;">${data.price} JMD</span>`] as [string, string]] : []),
     ["Preferred Date", data.date],
     ["Preferred Time", data.time],
   ];
@@ -127,7 +129,7 @@ ${data.name} (${data.email}) submitted a consultation request.
 Phone: ${data.phone}
 Service: ${serviceLabel}
 Package: ${data.selectedPackage}
-Date: ${data.date}
+${data.price ? `Price: ${data.price} JMD\n` : ""}Date: ${data.date}
 Time: ${data.time}
 ${data.message ? `\nMessage: ${data.message}` : ""}
 

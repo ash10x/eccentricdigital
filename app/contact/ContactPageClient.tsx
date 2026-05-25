@@ -6,8 +6,10 @@ import SearchParamsSync from "../components/searchParamsSync";
 
 export default function ContactPageClient({
   packageOptions,
+  packagePrices,
 }: {
   packageOptions: Record<string, string[]>;
+  packagePrices: Record<string, string>;
 }) {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
@@ -22,6 +24,7 @@ export default function ContactPageClient({
     phone: "",
     service: "",
     package: "",
+    price: "",
     date: "",
     time: "",
     message: "",
@@ -90,6 +93,7 @@ export default function ContactPageClient({
           phone: formData.phone,
           service: formData.service,
           package: formData.package,
+          price: formData.price,
           date: formData.date,
           time: formData.time,
           message: formData.message,
@@ -106,7 +110,7 @@ export default function ContactPageClient({
       setTimeout(() => {
         setToast(null);
         setStep(1);
-        setFormData({ name: "", email: "", phone: "", service: "", package: "", date: "", time: "", message: "" });
+        setFormData({ name: "", email: "", phone: "", service: "", package: "", price: "", date: "", time: "", message: "" });
       }, 4000);
     } catch {
       showError("Something went wrong. Please try again.");
@@ -353,7 +357,13 @@ export default function ContactPageClient({
                         <button
                           key={pkg}
                           type="button"
-                          onClick={() => setFormData((p) => ({ ...p, package: pkg }))}
+                          onClick={() =>
+                            setFormData((p) => ({
+                              ...p,
+                              package: pkg,
+                              price: packagePrices[pkg] ?? "",
+                            }))
+                          }
                           className={`package-btn ${formData.package === pkg ? "active-package" : ""}`}
                         >
                           {pkg}

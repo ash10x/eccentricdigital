@@ -9,6 +9,7 @@ export function userConfirmationEmail(data: {
   name: string;
   service: string;
   selectedPackage: string;
+  price?: string;
   date: string;
   time: string;
 }) {
@@ -103,6 +104,14 @@ export function userConfirmationEmail(data: {
                       <span style="font-size:14px;color:#ffffff;font-weight:600;">${data.selectedPackage}</span>
                     </td>
                   </tr>
+                  ${data.price ? `<tr>
+                    <td style="padding:12px 0;border-bottom:1px solid #161616;vertical-align:top;">
+                      <span style="font-size:12px;color:#4b5563;">Price</span>
+                    </td>
+                    <td style="padding:12px 0;border-bottom:1px solid #161616;vertical-align:top;">
+                      <span style="font-size:14px;color:#24eda2;font-weight:700;">${data.price} JMD</span>
+                    </td>
+                  </tr>` : ""}
                   <tr>
                     <td style="padding:12px 0;border-bottom:1px solid #161616;vertical-align:top;">
                       <span style="font-size:12px;color:#4b5563;">Preferred Date</span>
@@ -166,7 +175,7 @@ Your consultation application has been received. We'll be in touch within 24 hou
 BOOKING SUMMARY
 Service: ${serviceLabel}
 Package: ${data.selectedPackage}
-Preferred Date: ${formattedDate}
+${data.price ? `Price: ${data.price} JMD\n` : ""}Preferred Date: ${formattedDate}
 Preferred Time: ${data.time}
 
 — The Eccentric Digital Team

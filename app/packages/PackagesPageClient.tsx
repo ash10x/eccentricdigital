@@ -2,7 +2,7 @@
 
 import { motion, useScroll, useSpring } from "framer-motion";
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 type Package = {
   id: number;
@@ -15,6 +15,8 @@ type Package = {
   isFeatured: boolean;
   serviceKeys: string[];
 };
+
+type Currency = "JMD" | "USD";
 
 const categories = [
   { key: "custom-design", label: "Custom Web Design" },
@@ -40,11 +42,42 @@ function groupPackages(packages: Package[]) {
   }));
 }
 
+function parseJmdAmount(price: string): number {
+  return parseFloat(price.replace(/[^0-9.]/g, "")) || 0;
+}
+
+function formatPrice(jmdAmount: number, currency: Currency, rate: number | null): string {
+  if (currency === "JMD" || rate === null) {
+    return "$" + jmdAmount.toLocaleString("en-US", { maximumFractionDigits: 0 });
+  }
+  const usd = jmdAmount / rate;
+  return "$" + usd.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
 export default function PackagesPageClient({ packages }: { packages: Package[] }) {
   const grouped = groupPackages(packages);
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const progressScale = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+
+  const [currency, setCurrency] = useState<Currency>("JMD");
+  const [rate, setRate] = useState<number | null>(null);
+  const [rateFallback, setRateFallback] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/exchange-rate")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.rate) {
+          setRate(data.rate);
+          setRateFallback(!!data.fallback);
+        }
+      })
+      .catch(() => {
+        setRate(157);
+        setRateFallback(true);
+      });
+  }, []);
 
   return (
     <main ref={containerRef} className="bg-[#060606] text-white overflow-x-hidden relative">
@@ -93,11 +126,42 @@ export default function PackagesPageClient({ packages }: { packages: Package[] }
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.25 }}
-            className="text-[17px] text-white/40 max-w-xl mx-auto leading-relaxed tracking-[-0.01em]"
+            className="text-[17px] text-white/40 max-w-xl mx-auto leading-relaxed tracking-[-0.01em] mb-10"
           >
             We don&apos;t build pages. We build unfair digital advantages.
             Choose your growth tier.
           </motion.p>
+
+          {/* Currency toggle */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="flex flex-col items-center gap-3"
+          >
+            <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-white/[0.04] border border-white/[0.08]">
+              {(["JMD", "USD"] as Currency[]).map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setCurrency(c)}
+                  className={`px-5 py-2 rounded-lg text-[12px] font-bold tracking-[1.5px] uppercase transition-all duration-250 ${
+                    currency === c
+                      ? "bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-black shadow-[0_4px_20px_rgba(36,237,162,0.25)]"
+                      : "text-white/40 hover:text-white/70"
+                  }`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+
+            {rate !== null && (
+              <p className="text-[11px] text-white/20 tracking-[0.5px]">
+                {rateFallback ? "~" : ""}1 USD ≈ {rate.toLocaleString("en-US", { maximumFractionDigits: 2 })} JMD
+                {rateFallback && <span className="ml-1">(estimated)</span>}
+              </p>
+            )}
+          </motion.div>
         </div>
       </section>
 
@@ -117,75 +181,92 @@ export default function PackagesPageClient({ packages }: { packages: Package[] }
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {group.packages.map((pkg, i) => (
-                <motion.div
-                  key={pkg.id}
-                  initial={{ opacity: 0, y: 60 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-60px" }}
-                  transition={{ duration: 0.7, delay: i * 0.1 }}
-                  className={`relative rounded-2xl flex flex-col overflow-hidden transition-all duration-500 ${
-                    pkg.isFeatured
-                      ? "gradient-border-strong"
-                      : "border border-white/[0.06] bg-white/[0.02]"
-                  }`}
-                >
-                  {pkg.isFeatured && (
-                    <div className="absolute top-5 right-5 z-10">
-                      <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-black text-[10px] font-bold uppercase tracking-[1.5px]">
-                        Most Popular
-                      </span>
-                    </div>
-                  )}
+              {group.packages.map((pkg, i) => {
+                const jmdAmount = parseJmdAmount(pkg.price);
+                const displayPrice = formatPrice(jmdAmount, currency, rate);
 
-                  <div className="p-8 flex flex-col grow">
-                    {/* Header */}
-                    <div className="mb-8 pb-8 border-b border-white/[0.06]">
-                      <h3 className="text-[22px] font-bold tracking-[-0.03em] mb-3">
-                        {pkg.title}
-                      </h3>
-                      <p className="text-white/40 text-[13px] leading-relaxed">
-                        {pkg.description}
-                      </p>
-                    </div>
-
-                    {/* Price */}
-                    <div className="mb-8">
-                      <div className="flex items-baseline gap-1">
-                        <span className={`text-[52px] font-black tracking-[-0.04em] leading-none ${pkg.isFeatured ? "bg-gradient-to-r from-[#24eda2] to-[#00a3f8] bg-clip-text text-transparent" : "text-white"}`}>
-                          {pkg.price}
+                return (
+                  <motion.div
+                    key={pkg.id}
+                    initial={{ opacity: 0, y: 60 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-60px" }}
+                    transition={{ duration: 0.7, delay: i * 0.1 }}
+                    className={`relative rounded-2xl flex flex-col overflow-hidden transition-all duration-500 ${
+                      pkg.isFeatured
+                        ? "gradient-border-strong"
+                        : "border border-white/[0.06] bg-white/[0.02]"
+                    }`}
+                  >
+                    {pkg.isFeatured && (
+                      <div className="absolute top-5 right-5 z-10">
+                        <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-black text-[10px] font-bold uppercase tracking-[1.5px]">
+                          Most Popular
                         </span>
-                        <span className="text-white/30 text-[13px] font-medium ml-1">JMD</span>
                       </div>
-                      <p className="text-[12px] text-white/25 uppercase tracking-[2px] mt-2 font-semibold">
-                        {pkg.paymentType}
-                      </p>
+                    )}
+
+                    <div className="p-8 flex flex-col grow">
+                      {/* Header */}
+                      <div className="mb-8 pb-8 border-b border-white/[0.06]">
+                        <h3 className="text-[22px] font-bold tracking-[-0.03em] mb-3">
+                          {pkg.title}
+                        </h3>
+                        <p className="text-white/40 text-[13px] leading-relaxed">
+                          {pkg.description}
+                        </p>
+                      </div>
+
+                      {/* Price */}
+                      <div className="mb-8">
+                        <div className="flex items-baseline gap-2">
+                          <motion.span
+                            key={`${pkg.id}-${currency}`}
+                            initial={{ opacity: 0, y: 6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className={`text-[52px] font-black tracking-[-0.04em] leading-none ${
+                              pkg.isFeatured
+                                ? "bg-gradient-to-r from-[#24eda2] to-[#00a3f8] bg-clip-text text-transparent"
+                                : "text-white"
+                            }`}
+                          >
+                            {displayPrice}
+                          </motion.span>
+                          <span className="text-white/30 text-[13px] font-semibold uppercase tracking-[1px]">
+                            {currency}
+                          </span>
+                        </div>
+                        <p className="text-[12px] text-white/25 uppercase tracking-[2px] mt-2 font-semibold">
+                          {pkg.paymentType}
+                        </p>
+                      </div>
+
+                      {/* Features */}
+                      <ul className="space-y-3 mb-10 grow">
+                        {pkg.features.map((feature) => (
+                          <li key={feature} className="flex items-start gap-3">
+                            <span className="text-[#24eda2] text-[12px] mt-0.5 shrink-0 font-bold">✓</span>
+                            <span className="text-[13px] text-white/55 leading-snug">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      {/* CTA */}
+                      <Link
+                        href={`/contact?package=${encodeURIComponent(pkg.title)}`}
+                        className={`block w-full py-3.5 rounded-xl text-center text-[14px] font-bold tracking-[-0.01em] transition-all duration-300 ${
+                          pkg.isFeatured
+                            ? "bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-black hover:shadow-[0_16px_48px_rgba(36,237,162,0.3)] hover:-translate-y-0.5"
+                            : "border border-white/[0.1] text-white/70 hover:border-white/20 hover:text-white"
+                        }`}
+                      >
+                        Start This Project →
+                      </Link>
                     </div>
-
-                    {/* Features */}
-                    <ul className="space-y-3 mb-10 grow">
-                      {pkg.features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-3">
-                          <span className="text-[#24eda2] text-[12px] mt-0.5 shrink-0 font-bold">✓</span>
-                          <span className="text-[13px] text-white/55 leading-snug">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    {/* CTA */}
-                    <Link
-                      href={`/contact?package=${encodeURIComponent(pkg.title)}`}
-                      className={`block w-full py-3.5 rounded-xl text-center text-[14px] font-bold tracking-[-0.01em] transition-all duration-300 ${
-                        pkg.isFeatured
-                          ? "bg-gradient-to-r from-[#24eda2] to-[#00a3f8] text-black hover:shadow-[0_16px_48px_rgba(36,237,162,0.3)] hover:-translate-y-0.5"
-                          : "border border-white/[0.1] text-white/70 hover:border-white/20 hover:text-white"
-                      }`}
-                    >
-                      Start This Project →
-                    </Link>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         ))}

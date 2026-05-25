@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
       phone,
       service,
       package: selectedPackage,
+      price,
       date,
       time,
       message,
@@ -23,6 +24,7 @@ export async function POST(req: NextRequest) {
       phone: string;
       service: string;
       package: string;
+      price?: string;
       date: string;
       time: string;
       message?: string;
@@ -57,6 +59,7 @@ export async function POST(req: NextRequest) {
       name,
       service,
       selectedPackage,
+      price,
       date,
       time,
     });
@@ -67,6 +70,7 @@ export async function POST(req: NextRequest) {
       phone,
       service,
       selectedPackage,
+      price,
       date,
       time,
       message,
