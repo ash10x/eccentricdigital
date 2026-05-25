@@ -52,7 +52,7 @@ export function userConfirmationEmail(data: {
               <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
                 <tr>
                   <td>
-                    <img src="	https://www.eccentricdigital.com/_next/image?url=%2Feccentriclogo.png&w=128&q=75" alt="Eccentric Digital" width="60" style="display:block;">
+                    <img src="https://www.eccentricdigital.com/_next/image?url=%2Feccentriclogo.png&w=128&q=75" alt="Eccentric Digital" width="50" height="50" style="display:block;">
                   </td>
                   <td align="right">
                     <span style="font-size:11px;color:#4b5563;text-transform:uppercase;letter-spacing:2px;">Confirmation</span>
