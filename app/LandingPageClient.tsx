@@ -88,7 +88,7 @@ export default function LandingPageClient({
             transition={{ duration: 0.6 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/4 border border-white/[0.08] mb-10 mt-8"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#24eda2] animate-pulse mt-1.5" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#24eda2] animate-pulse" />
             <span className="text-[11px] uppercase tracking-[3px] text-white/50 font-semibold">
               Premium Digital Studio
             </span>
