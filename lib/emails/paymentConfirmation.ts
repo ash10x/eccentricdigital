@@ -1,8 +1,14 @@
 import { BANK_DETAILS } from "@/lib/bankDetails";
 
-export type PaymentEvent = "deposit_received" | "full_payment_received" | "final_payment_received";
+export type PaymentEvent =
+  | "deposit_received"
+  | "full_payment_received"
+  | "final_payment_received";
 
-const EVENT_COPY: Record<PaymentEvent, { subject: string; headline: string; badge: string; amountLabel: string }> = {
+const EVENT_COPY: Record<
+  PaymentEvent,
+  { subject: string; headline: string; badge: string; amountLabel: string }
+> = {
   deposit_received: {
     subject: "Deposit Received — Eccentric Digital",
     headline: "Deposit Confirmed.",
@@ -40,7 +46,8 @@ export function paymentConfirmationEmail(data: {
   amountPaid: string;
   event: PaymentEvent;
 }) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://eccentricdigital.com";
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://eccentricdigital.com";
   const firstName = data.name.split(" ")[0];
   const copy = EVENT_COPY[data.event];
   const nextStep = NEXT_STEPS[data.event];
@@ -65,9 +72,7 @@ export function paymentConfirmationEmail(data: {
               <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
                 <tr>
                   <td>
-                    <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;">
-                      <span style="background:linear-gradient(90deg,#24eda2,#00a3f8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:#24eda2;">Eccentric Digital</span>
-                    </div>
+                  <img src="https://www.eccentricdigital.com/_next/image?url=%2Feccentriclogo.png&w=128&q=75" alt="Eccentric Digital" width="50" height="50" style="display:block;">
                   </td>
                   <td align="right">
                     <span style="display:inline-block;padding:4px 12px;border-radius:999px;background:${isDeposit ? "rgba(251,191,36,0.12)" : "rgba(36,237,162,0.12)"};border:1px solid ${isDeposit ? "rgba(251,191,36,0.25)" : "rgba(36,237,162,0.25)"};font-size:11px;font-weight:700;color:${isDeposit ? "#fbbf24" : "#24eda2"};text-transform:uppercase;letter-spacing:1.5px;">
@@ -142,7 +147,9 @@ export function paymentConfirmationEmail(data: {
                 <p style="margin:0;font-size:14px;color:#9ca3af;line-height:1.75;">${nextStep}</p>
               </div>
 
-              ${isDeposit ? `<!-- Remaining balance bank details -->
+              ${
+                isDeposit
+                  ? `<!-- Remaining balance bank details -->
               <div style="background:#0a0a0a;border:1px solid #1e1e1e;border-radius:14px;padding:28px;margin-bottom:28px;">
                 <p style="margin:0 0 6px;font-size:10px;text-transform:uppercase;letter-spacing:2.5px;color:#374151;font-weight:700;">Pay Your Remaining Balance</p>
                 <p style="margin:0 0 18px;font-size:13px;color:#6b7280;line-height:1.6;">When you're ready to pay the remaining 50%, transfer to either account below using your reference number as the description.</p>
@@ -154,7 +161,8 @@ export function paymentConfirmationEmail(data: {
 
                 <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
                   <tr>
-                    ${BANK_DETAILS.map((bank) => `
+                    ${BANK_DETAILS.map(
+                      (bank) => `
                     <td width="48%" style="vertical-align:top;padding:0 4px;">
                       <div style="background:#111111;border:1px solid #222222;border-radius:10px;padding:16px;">
                         <p style="margin:0 0 12px;font-size:10px;color:#24eda2;text-transform:uppercase;letter-spacing:2px;font-weight:700;">${bank.bank}</p>
@@ -166,7 +174,9 @@ export function paymentConfirmationEmail(data: {
                           <tr><td style="padding:4px 0;font-size:11px;color:#4b5563;">Branch</td></tr>
                           <tr><td style="padding:0 0 ${bank.wire ? "12px" : "0"};font-size:12px;color:#ffffff;font-weight:600;">${bank.branch}</td></tr>
                         </table>
-                        ${bank.wire ? `
+                        ${
+                          bank.wire
+                            ? `
                         <div style="border-top:1px solid #2a2a2a;margin-top:4px;padding-top:12px;">
                           <p style="margin:0 0 8px;font-size:9px;color:#00a3f8;text-transform:uppercase;letter-spacing:2px;font-weight:700;">International Wire</p>
                           <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
@@ -174,19 +184,32 @@ export function paymentConfirmationEmail(data: {
                             <tr><td style="padding:0 0 6px;font-size:12px;color:#ffffff;font-weight:700;font-family:monospace;letter-spacing:1px;">${bank.wire.swiftCode}</td></tr>
                             <tr><td style="padding:3px 0;font-size:10px;color:#4b5563;">Bank Address</td></tr>
                             <tr><td style="padding:0 0 6px;font-size:11px;color:#d1d5db;font-weight:500;line-height:1.4;">${bank.wire.bankAddress}</td></tr>
-                            ${bank.wire.correspondentBank ? `
+                            ${
+                              bank.wire.correspondentBank
+                                ? `
                             <tr><td style="padding:3px 0;font-size:10px;color:#4b5563;">Correspondent Bank</td></tr>
-                            <tr><td style="padding:0 0 6px;font-size:11px;color:#d1d5db;font-weight:500;">${bank.wire.correspondentBank}</td></tr>` : ""}
-                            ${bank.wire.correspondentSwift ? `
+                            <tr><td style="padding:0 0 6px;font-size:11px;color:#d1d5db;font-weight:500;">${bank.wire.correspondentBank}</td></tr>`
+                                : ""
+                            }
+                            ${
+                              bank.wire.correspondentSwift
+                                ? `
                             <tr><td style="padding:3px 0;font-size:10px;color:#4b5563;">Correspondent SWIFT</td></tr>
-                            <tr><td style="padding:0;font-size:11px;color:#d1d5db;font-weight:600;font-family:monospace;">${bank.wire.correspondentSwift}</td></tr>` : ""}
+                            <tr><td style="padding:0;font-size:11px;color:#d1d5db;font-weight:600;font-family:monospace;">${bank.wire.correspondentSwift}</td></tr>`
+                                : ""
+                            }
                           </table>
-                        </div>` : ""}
+                        </div>`
+                            : ""
+                        }
                       </div>
-                    </td>`).join('<td width="4%"></td>')}
+                    </td>`,
+                    ).join('<td width="4%"></td>')}
                   </tr>
                 </table>
-              </div>` : ""}
+              </div>`
+                  : ""
+              }
 
               <!-- CTA -->
               <div style="text-align:center;">
@@ -227,7 +250,9 @@ Service: ${data.service}
 Package: ${data.selectedPackage}
 
 ${nextStep}
-${isDeposit ? `
+${
+  isDeposit
+    ? `
 PAY YOUR REMAINING BALANCE
 When ready, transfer the remaining 50% to either account below.
 Use your reference number (${data.referenceNumber}) as the transfer description.
@@ -241,7 +266,9 @@ ${BANK_DETAILS.map((b) => {
 }).join("\n\n")}
 
 Then visit ${siteUrl}/payment to confirm.
-` : ""}
+`
+    : ""
+}
 View your booking: ${siteUrl}/payment
 
 — The Eccentric Digital Team`;
