@@ -42,7 +42,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 w-full z-100 transition-all duration-500 ${
         scrolled
           ? "bg-[#060606]/80 backdrop-blur-2xl border-b border-white/[0.06]"
           : "bg-transparent border-b border-transparent"
@@ -175,7 +175,7 @@ export default function Navbar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-90 md:hidden"
               onClick={() => setIsOpen(false)}
             />
             <motion.div
@@ -183,7 +183,7 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed top-0 right-0 h-full w-72 bg-[#0a0a0a] border-l border-white/[0.06] z-50 md:hidden flex flex-col"
+              className="fixed top-0 right-0 h-full w-72 bg-[#0a0a0a] border-l border-white/[0.06] z-100 md:hidden flex flex-col"
             >
               <div className="flex items-center justify-between px-6 h-16 border-b border-white/[0.06]">
                 <span className="text-sm font-semibold text-white/40 uppercase tracking-widest">Menu</span>
