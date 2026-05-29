@@ -20,6 +20,7 @@ export default function ContactPageClient({
 
   const [formData, setFormData] = useState({
     name: "",
+    businessName: "",
     email: "",
     phone: "",
     service: "",
@@ -28,7 +29,15 @@ export default function ContactPageClient({
     date: "",
     time: "",
     message: "",
+    clientType: "new" as "new" | "existing",
+    existingRef: "",
   });
+
+  const [existingRefState, setExistingRefState] = useState<{
+    loading: boolean;
+    valid: boolean | null;
+    clientName?: string;
+  }>({ loading: false, valid: null });
 
   const [toast, setToast] = useState<{
     type: "success" | "error";
@@ -40,6 +49,30 @@ export default function ContactPageClient({
   const showError = (msg: string) => {
     setToast({ type: "error", message: msg });
     setTimeout(() => setToast(null), 3000);
+  };
+
+  const applyDiscount = (price: string, pct: number): string => {
+    const num = parseFloat(price.replace(/[^0-9.]/g, ""));
+    if (!num) return price;
+    const discounted = Math.round(num * (1 - pct / 100));
+    return "$" + discounted.toLocaleString("en-US", { maximumFractionDigits: 0 });
+  };
+
+  const validateExistingRef = async () => {
+    const ref = formData.existingRef.trim().toUpperCase();
+    if (!ref) return;
+    setExistingRefState({ loading: true, valid: null });
+    try {
+      const res = await fetch(`/api/maintenance/validate?ref=${encodeURIComponent(ref)}`);
+      const data = await res.json();
+      if (data.valid) {
+        setExistingRefState({ loading: false, valid: true, clientName: data.name });
+      } else {
+        setExistingRefState({ loading: false, valid: false });
+      }
+    } catch {
+      setExistingRefState({ loading: false, valid: false });
+    }
   };
 
   const nextStep = () => {
@@ -54,9 +87,15 @@ export default function ContactPageClient({
         return;
       }
     }
-    if (step === 2 && (!formData.service || !formData.package)) {
-      showError("Select a service and package.");
-      return;
+    if (step === 2) {
+      if (!formData.service || !formData.package) {
+        showError("Select a service and package.");
+        return;
+      }
+      if (formData.service === "maintenance" && formData.clientType === "existing" && !existingRefState.valid) {
+        showError("Please verify your existing reference number first.");
+        return;
+      }
     }
     setStep((s) => Math.min(s + 1, totalSteps));
   };
@@ -68,7 +107,8 @@ export default function ContactPageClient({
   ) => {
     const { name, value } = e.target;
     if (name === "service") {
-      setFormData((prev) => ({ ...prev, service: value, package: "" }));
+      setFormData((prev) => ({ ...prev, service: value, package: "", clientType: "new", existingRef: "" }));
+      setExistingRefState({ loading: false, valid: null });
     } else if (name === "phone") {
       setFormData((prev) => ({ ...prev, phone: value.replace(/[^\d+\-\s()]/g, "") }));
     } else {
@@ -89,6 +129,7 @@ export default function ContactPageClient({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.name,
+          businessName: formData.businessName,
           email: formData.email,
           phone: formData.phone,
           service: formData.service,
@@ -97,6 +138,8 @@ export default function ContactPageClient({
           date: formData.date,
           time: formData.time,
           message: formData.message,
+          clientType: formData.clientType,
+          existingRef: formData.existingRef || undefined,
         }),
       });
       if (!res.ok) {
@@ -104,14 +147,18 @@ export default function ContactPageClient({
         throw new Error(data.error || "Failed to submit");
       }
       const data = await res.json();
+      const isMaintenance = data.type === "maintenance";
       setToast({
         type: "success",
-        message: `Application received! Ref: ${data.referenceNumber}. Check your email for details.`,
+        message: isMaintenance
+          ? `Subscription confirmed! Ref: ${data.referenceNumber}. Check your email.`
+          : `Application received! Ref: ${data.referenceNumber}. Check your email for details.`,
       });
       setTimeout(() => {
         setToast(null);
         setStep(1);
-        setFormData({ name: "", email: "", phone: "", service: "", package: "", price: "", date: "", time: "", message: "" });
+        setFormData({ name: "", businessName: "", email: "", phone: "", service: "", package: "", price: "", date: "", time: "", message: "", clientType: "new", existingRef: "" });
+        setExistingRefState({ loading: false, valid: null });
       }, 4000);
     } catch {
       showError("Something went wrong. Please try again.");
@@ -303,6 +350,13 @@ export default function ContactPageClient({
                       className="input-style"
                     />
                     <input
+                      name="businessName"
+                      placeholder="Business Name (optional)"
+                      value={formData.businessName}
+                      onChange={handleChange}
+                      className="input-style"
+                    />
+                    <input
                       type="email"
                       name="email"
                       placeholder="Your Email"
@@ -363,24 +417,117 @@ export default function ContactPageClient({
                     <option value="remodeling">Website Remodel</option>
                   </select>
 
+                  {/* ── Maintenance: New / Existing client toggle ── */}
+                  {formData.service === "maintenance" && (
+                    <div className="mb-6">
+                      <p className="text-[11px] uppercase tracking-[3px] text-white/25 font-semibold mb-3">I am a…</p>
+                      <div className="grid grid-cols-2 gap-2 mb-5">
+                        {(["new", "existing"] as const).map((type) => (
+                          <button
+                            key={type}
+                            type="button"
+                            onClick={() => {
+                              setFormData((p) => ({ ...p, clientType: type, existingRef: "", package: "" }));
+                              setExistingRefState({ loading: false, valid: null });
+                            }}
+                            className={`py-3 rounded-xl text-[13px] font-semibold transition-all border ${
+                              formData.clientType === type
+                                ? "bg-[#24eda2]/10 border-[#24eda2]/30 text-[#24eda2]"
+                                : "border-white/[0.08] text-white/40 hover:text-white hover:border-white/20"
+                            }`}
+                          >
+                            {type === "new" ? "New Subscriber" : "Existing Client"}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Existing client ref input */}
+                      {formData.clientType === "existing" && (
+                        <div className="space-y-3 mb-5">
+                          <div className="flex gap-2">
+                            <input
+                              type="text"
+                              value={formData.existingRef}
+                              onChange={(e) => {
+                                const val = e.target.value.toUpperCase();
+                                setFormData((p) => ({ ...p, existingRef: val }));
+                                setExistingRefState({ loading: false, valid: null });
+                              }}
+                              placeholder="Your reference (ED-XXXXXX or MNT-XXXXXXXX)"
+                              className="input-style flex-1 font-mono tracking-wider"
+                            />
+                            <button
+                              type="button"
+                              onClick={validateExistingRef}
+                              disabled={!formData.existingRef.trim() || existingRefState.loading}
+                              className="px-4 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white/50 text-[13px] hover:border-[#24eda2]/30 hover:text-[#24eda2] transition-all disabled:opacity-40 whitespace-nowrap"
+                            >
+                              {existingRefState.loading ? "…" : "Verify →"}
+                            </button>
+                          </div>
+
+                          {existingRefState.valid === true && (
+                            <motion.div
+                              initial={{ opacity: 0, y: -6 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#24eda2]/[0.08] border border-[#24eda2]/20"
+                            >
+                              <span className="text-[#24eda2] font-bold text-lg">✓</span>
+                              <div>
+                                <p className="text-[13px] font-semibold text-[#24eda2]">Welcome back, {existingRefState.clientName}!</p>
+                                <p className="text-[12px] text-[#24eda2]/60">10% loyalty discount will be applied to your subscription.</p>
+                              </div>
+                            </motion.div>
+                          )}
+
+                          {existingRefState.valid === false && (
+                            <motion.div
+                              initial={{ opacity: 0, y: -6 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/[0.08] border border-red-500/20"
+                            >
+                              <span className="text-red-400 font-bold">✕</span>
+                              <p className="text-[13px] text-red-400">Reference not found. Please check and try again.</p>
+                            </motion.div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Package grid */}
                   {formData.service && packageOptions[formData.service] && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {packageOptions[formData.service].map((pkg) => (
-                        <button
-                          key={pkg}
-                          type="button"
-                          onClick={() =>
-                            setFormData((p) => ({
-                              ...p,
-                              package: pkg,
-                              price: packagePrices[pkg] ?? "",
-                            }))
-                          }
-                          className={`package-btn ${formData.package === pkg ? "active-package" : ""}`}
-                        >
-                          {pkg}
-                        </button>
-                      ))}
+                      {packageOptions[formData.service].map((pkg) => {
+                        const basePrice = packagePrices[pkg] ?? "";
+                        const isExistingMaint = formData.service === "maintenance" && formData.clientType === "existing" && existingRefState.valid;
+                        const displayPrice = isExistingMaint ? applyDiscount(basePrice, 10) : basePrice;
+                        return (
+                          <button
+                            key={pkg}
+                            type="button"
+                            onClick={() =>
+                              setFormData((p) => ({
+                                ...p,
+                                package: pkg,
+                                price: isExistingMaint ? applyDiscount(basePrice, 10) : basePrice,
+                              }))
+                            }
+                            className={`package-btn ${formData.package === pkg ? "active-package" : ""}`}
+                          >
+                            <span className="block">{pkg}</span>
+                            {basePrice && (
+                              <span className="block text-[11px] mt-1 opacity-70">
+                                {isExistingMaint && (
+                                  <span className="line-through mr-1.5 opacity-50">{basePrice}</span>
+                                )}
+                                <span className={isExistingMaint ? "text-[#24eda2]" : ""}>{displayPrice}</span>
+                                {formData.service === "maintenance" && <span className="ml-1">/mo</span>}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
 
@@ -391,7 +538,9 @@ export default function ContactPageClient({
                   )}
 
                   <p className="text-white/25 mt-6 text-[12px] tracking-[-0.01em]">
-                    We accept a limited number of projects per month to maintain elite quality.
+                    {formData.service === "maintenance"
+                      ? "Subscriptions renew monthly. Cancel or upgrade anytime."
+                      : "We accept a limited number of projects per month to maintain elite quality."}
                   </p>
 
                   <div className="flex items-center justify-between mt-8">

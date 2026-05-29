@@ -73,6 +73,26 @@ export const socialLinks = pgTable("social_links", {
   displayOrder: integer("display_order").default(0).notNull(),
 });
 
+export const maintenanceSubscriptions = pgTable("maintenance_subscriptions", {
+  id: serial("id").primaryKey(),
+  maintenanceRef: varchar("maintenance_ref", { length: 50 }).notNull().unique(),
+  existingRef: varchar("existing_ref", { length: 30 }),
+  clientType: varchar("client_type", { length: 20 }).notNull().default("new"),
+  name: varchar("name", { length: 255 }).notNull(),
+  businessName: varchar("business_name", { length: 255 }).notNull().default(""),
+  email: varchar("email", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 30 }).notNull().default(""),
+  packageTitle: varchar("package_title", { length: 255 }).notNull(),
+  originalPrice: varchar("original_price", { length: 50 }).notNull().default(""),
+  finalPrice: varchar("final_price", { length: 50 }).notNull().default(""),
+  discountApplied: boolean("discount_applied").default(false).notNull(),
+  subscriptionStart: timestamp("subscription_start").notNull(),
+  subscriptionEnd: timestamp("subscription_end").notNull(),
+  status: varchar("status", { length: 20 }).notNull().default("pending"),
+  paymentStatus: varchar("payment_status", { length: 20 }).notNull().default("unpaid"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const adminUsers = pgTable("admin_users", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
@@ -89,6 +109,7 @@ export const contactSubmissions = pgTable("contact_submissions", {
   id: serial("id").primaryKey(),
   referenceNumber: varchar("reference_number", { length: 20 }).notNull().default(""),
   name: varchar("name", { length: 255 }).notNull(),
+  businessName: varchar("business_name", { length: 255 }).notNull().default(""),
   email: varchar("email", { length: 255 }).notNull(),
   phone: varchar("phone", { length: 30 }).notNull().default(""),
   service: varchar("service", { length: 255 }).notNull(),

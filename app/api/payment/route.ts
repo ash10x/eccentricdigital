@@ -20,6 +20,10 @@ function isValidRef(ref: string) {
   return /^ED-[A-Z0-9]{6}$/.test(ref);
 }
 
+function isMaintenanceRef(ref: string) {
+  return /^MNT-[A-Z0-9]{8}$/.test(ref) || /^ED-[A-Z0-9]{6}-[A-Z0-9]{8}$/.test(ref);
+}
+
 function resolveEvent(prev: PaymentStatus, next: PaymentStatus): PaymentEvent | null {
   if (prev === "unpaid" && next === "deposit_paid") return "deposit_received";
   if (prev === "unpaid" && next === "fully_paid") return "full_payment_received";
@@ -38,7 +42,17 @@ function formatJmd(amount: number): string {
 export async function GET(req: NextRequest) {
   const ref = req.nextUrl.searchParams.get("ref")?.trim().toUpperCase();
 
-  if (!ref || !isValidRef(ref)) {
+  if (!ref) {
+    return NextResponse.json({ error: "Reference number required." }, { status: 400 });
+  }
+
+  // Route maintenance refs to the dedicated endpoint
+  if (isMaintenanceRef(ref)) {
+    const url = new URL(req.url);
+    return NextResponse.redirect(new URL(`/api/maintenance?ref=${encodeURIComponent(ref)}`, url.origin));
+  }
+
+  if (!isValidRef(ref)) {
     return NextResponse.json({ error: "Invalid reference number format." }, { status: 400 });
   }
 
@@ -81,7 +95,7 @@ export async function PATCH(req: NextRequest) {
   const ref = (body.referenceNumber as string)?.trim().toUpperCase();
   const newStatus = body.paymentStatus as string;
 
-  if (!ref || !isValidRef(ref)) {
+  if (!ref || (!isValidRef(ref) && !isMaintenanceRef(ref))) {
     return NextResponse.json({ error: "Invalid reference number." }, { status: 400 });
   }
   if (!VALID_STATUSES.includes(newStatus as PaymentStatus)) {

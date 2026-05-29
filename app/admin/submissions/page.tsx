@@ -6,6 +6,7 @@ interface Submission {
   id: number;
   referenceNumber: string;
   name: string;
+  businessName: string;
   email: string;
   phone: string;
   service: string;
@@ -172,6 +173,7 @@ export default function SubmissionsPage() {
                 {[
                   ["Email", detail.email],
                   ["Phone", detail.phone],
+                  ...(detail.businessName ? [["Business", detail.businessName]] : []),
                   ["Service", detail.service],
                   ["Package", detail.selectedPackage],
                   ["Price", detail.price],

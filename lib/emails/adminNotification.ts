@@ -7,6 +7,7 @@ const serviceLabels: Record<string, string> = {
 
 export function adminNotificationEmail(data: {
   name: string;
+  businessName?: string;
   email: string;
   phone: string;
   service: string;
@@ -21,6 +22,7 @@ export function adminNotificationEmail(data: {
   const rows: [string, string][] = [
     ["Reference", `<span style="color:#24eda2;font-weight:700;letter-spacing:1.5px;font-family:monospace;">${data.referenceNumber}</span>`],
     ["Name", data.name],
+    ...(data.businessName ? [["Business", data.businessName] as [string, string]] : []),
     ["Email", `<a href="mailto:${data.email}" style="color:#24eda2;text-decoration:none;">${data.email}</a>`],
     ["Phone", `<a href="tel:${data.phone}" style="color:#24eda2;text-decoration:none;">${data.phone}</a>`],
     ["Service", serviceLabel],
@@ -127,7 +129,7 @@ export function adminNotificationEmail(data: {
   const text = `New Application — Eccentric Digital
 
 Reference: ${data.referenceNumber}
-${data.name} (${data.email}) submitted a consultation request.
+${data.name}${data.businessName ? ` — ${data.businessName}` : ""} (${data.email}) submitted a consultation request.
 
 Phone: ${data.phone}
 Service: ${serviceLabel}

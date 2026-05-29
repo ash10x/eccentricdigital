@@ -8,6 +8,7 @@ import Image from "next/image";
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: "⊞" },
   { href: "/admin/submissions", label: "Submissions", icon: "✉" },
+  { href: "/admin/maintenance", label: "Maintenance", icon: "↺" },
   { href: "/admin/projects", label: "Projects", icon: "◈" },
   { href: "/admin/services", label: "Services", icon: "⬡" },
   { href: "/admin/packages", label: "Packages", icon: "⬜" },
