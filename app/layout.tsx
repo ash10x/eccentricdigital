@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Urbanist } from "next/font/google";
 // @ts-ignore: CSS module types are handled by Next.js
 import "./globals.css";
+import ConditionalLayout from "./components/ConditionalLayout";
 import Navbar from "./components/navigation";
 import Footer from "./components/footer";
 
@@ -27,9 +28,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${urbanist.variable} antialiased`} style={{ fontFamily: "var(--font-urbanist), 'Segoe UI', system-ui, sans-serif" }}>
-        <Navbar />
-        {children}
-        <Footer />
+        <ConditionalLayout navbar={<Navbar />} footer={<Footer />}>
+          {children}
+        </ConditionalLayout>
       </body>
     </html>
   );

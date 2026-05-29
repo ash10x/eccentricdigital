@@ -73,6 +73,18 @@ export const socialLinks = pgTable("social_links", {
   displayOrder: integer("display_order").default(0).notNull(),
 });
 
+export const adminUsers = pgTable("admin_users", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  username: varchar("username", { length: 100 }).notNull().unique(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  passwordHash: varchar("password_hash", { length: 255 }).notNull(),
+  role: varchar("role", { length: 20 }).notNull().default("admin"),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  lastLoginAt: timestamp("last_login_at"),
+});
+
 export const contactSubmissions = pgTable("contact_submissions", {
   id: serial("id").primaryKey(),
   referenceNumber: varchar("reference_number", { length: 20 }).notNull().default(""),
